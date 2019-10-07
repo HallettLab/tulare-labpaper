@@ -378,6 +378,7 @@ preiplag<-prism_lag%>%
 
 forb_rich <- rich %>%
   filter(func == "forb native")
+
 rich_litter <- left_join(forb_rich, envdat) %>%
   filter(year%in%c(2006:2012)) %>%
   filter(litter != "NA")
@@ -389,7 +390,7 @@ rich.lit.fig <- ggplot(rich_litter, aes(litter, richness)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 anova(lm(richness ~litter, rich_litter))
 rich_precip<-left_join(rich_litter, preiplag)
-rich.prec.fig<-ggplot(rich_precip, aes(prcp, richness)) +
+rich.prec.fig<-ggplot(subset(rich_precip, trt== "grazed burned"), aes(prcp, richness)) +
                         geom_jitter(aes(color=as.factor(trt))) +
                         labs(x = "Prior year Precip", y = "Native Forb Richness", color = "Treatment") +
                         geom_smooth(aes(color=as.factor(trt)), method = lm, se = FALSE) + 
@@ -411,21 +412,14 @@ cov.lit.fig<-ggplot(cov_litter, aes(litter, relcov)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 anova(lm(relcov ~litter, cov_litter))
 cov_precip<-left_join(cov_litter, preiplag)
-cov.prec.fig<-ggplot(cov_precip, aes(prcp, relcov)) +
+cov.prec.fig<-ggplot(subset(cov_precip, trt== "grazed burned"), aes(prcp, relcov)) +
   geom_jitter(aes(color=as.factor(trt))) +
   labs(x = "Prior year Precip", y = "Native Forb Cover (%)", color = "Treatment") +
   geom_smooth(aes(color=as.factor(trt)), method = lm, se = FALSE) + 
   theme_classic() +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 
-litprec<-ggplot(cov_precip, aes(prcp, log(litter))) +
-  geom_jitter(aes(color=as.factor(trt))) +
-  labs(x = "Prior year Precip", y = "Log Litter", color = "Treatment") +
-  geom_smooth(aes(color=as.factor(trt)), method = lm, se = FALSE) + 
-  theme_classic() +
-  scale_color_manual(values= c("grey0", "grey36", "grey65"))
-
-litprec<-ggplot(cov_precip, aes(prcp, log(litter))) +
+litprec<-ggplot(subset(cov_precip, trt== "grazed burned"), aes(prcp, log(litter))) +
   geom_jitter(aes(color=as.factor(trt))) +
   labs(x = "Prior year Precip", y = "Log(Litter % Cover)", color = "Treatment") +
   geom_smooth(aes(color=as.factor(trt)), method = lm, se = FALSE) + 
@@ -436,16 +430,6 @@ ggarrange(rich.lit.fig, cov.lit.fig, rich.prec.fig, cov.prec.fig, litprec, ncol=
   common.legend = TRUE, legend = "bottom", 
   font.label = list(size = 10),
   hjust = c(-0.5, -0.35, -0.5, -0.35, -0.9, -0.5))
-
-
-
-
-ggarrange(f1, f2, f3, f4, f5, f6,  ncol = 2, nrow = 3, 
-          labels = c("a) Native forb", "b) Non-native grass",
-                     "c) Native forb", "d) Non-native grass", "e) Litter", "f) Precipitation"),
-          common.legend = TRUE, legend = "bottom", 
-          font.label = list(size = 10),
-          hjust = c(-0.5, -0.35, -0.5, -0.35, -0.9, -0.5))
 
 
 ##########
