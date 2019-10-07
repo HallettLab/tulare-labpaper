@@ -522,6 +522,47 @@ summary(cov_IG2011.2)
 summary(cov_IG2012)
 summary(cov_IG2012.2)
 
+#load "lit"
+litlit<-lit%>%
+  separate(quadratNew, into=c("transect2", "quadrat"), sep="-") 
+
+#set the intercept to ungrazed burned for the third pair comparison
+litlit2<-litlit%>%
+  ungroup()%>%
+  mutate(trt=as.factor(trt))
+litlit2$trt <- factor(litlit2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
+
+#lme of litter each year from 2006-2012
+lit_2006<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2006))
+lit_2006.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2,year==2006))
+lit_2007<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2007))
+lit_2007.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2007))
+lit_2008<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2008))
+lit_2008.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2008))
+lit_2009<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2009))
+lit_2009.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2009))
+lit_2010<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2010))
+lit_2010.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2010))
+lit_2011<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2011))
+lit_2011.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2011))
+lit_2012<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2012))
+lit_2012.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2012))
+
+summary(lit_2006)
+summary(lit_2006.2)
+summary(lit_2007)
+summary(lit_2007.2)
+summary(lit_2008)
+summary(lit_2008.2)
+summary(lit_2009)
+summary(lit_2009.2)
+summary(lit_2010)
+summary(lit_2010.2)
+summary(lit_2011)
+summary(lit_2011.2)
+summary(lit_2012)
+summary(lit_2012.2)
+
 ##example from onoline
 lme(y ~ p_gender*t_gender + part_gen, data=grdata,
     + random = list(~ p_gender | therapist, ~ 1 | group))
