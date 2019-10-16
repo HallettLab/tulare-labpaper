@@ -357,7 +357,7 @@ f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
   ggtitle("")
 
 #load "prism grow" from BUGR_timeseries.R
-f6b <- ggplot(subset(prism_grow, year%in%c(2005:2012)), aes(year, prcp)) +
+f6b <- ggplot(subset(prism_grow, year%in%c(2004:2012)), aes(year, prcp)) +
   geom_bar(stat = "identity", fill = "lightgrey") +
   labs(x = NULL, y = "Mean Annual Precip (mm)") +
   ggtitle("")
@@ -464,3 +464,14 @@ ggarrange(rich.lit.fig, cov.lit.fig, rich.prec.fig, cov.prec.fig, litprec, ncol=
 #  select(-index, -stat, -p.value)
 
 #write.csv(indsum1, file = "Grazing_indicator_sp.csv")
+
+richrichrich <- richrich %>%
+  group_by(func, year, transect, trt) %>%
+  summarize(rich1 = mean(richness), richse1 = calcSE(richness))
+ggplot(subset(richrichrich, func == "forb native"&year%in%c(2005:2012)), aes(year, rich1)) +
+  geom_point(aes(color=as.factor(transect)), pch = 21) +
+  geom_line(aes(color=as.factor(transect))) +
+  facet_wrap(aes(color=as.factor(trt))) +
+  geom_errorbar(aes(ymin = rich1-richse1, ymax = rich1+richse1, color = as.factor(transect))) +
+  theme_bw()
+  
