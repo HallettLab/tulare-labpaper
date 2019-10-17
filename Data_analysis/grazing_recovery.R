@@ -355,10 +355,15 @@ f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
   annotate("text", x= 2004.5, y = 5, label = "fire", size = 3) +
   geom_segment(aes(x=2004.5, y=2.5, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
   ggtitle("")+
-  xlim(2004, 2012)
+  xlim(2004, 2012)+
+  annotate(geom = 'text', x= 2008.5, y = 35, 
+                           label = "atop(cattle, reintroduced)", 
+                           parse = TRUE, size=3)+
+  geom_segment(aes(x=2008.5, y=30, xend=2008.5, yend=27), arrow=arrow(length = unit(0.03, "npc"))) 
+  
 
 #load "prism grow" from BUGR_timeseries.R
-f6b <- ggplot(subset(prism_grow, year%in%c(2005:2012)), aes(year, prcp)) +
+f6b <- ggplot(subset(prism_grow, year%in%c(2004:2012)), aes(year, prcp)) +
   geom_bar(stat = "identity", fill = "lightgrey") +
   labs(x = NULL, y = "Mean Annual Precip (mm)") +
   ggtitle("")+
@@ -370,6 +375,98 @@ ggarrange(f1b, f2b, f3b, f4b, f5b, f6b,  ncol = 2, nrow = 3,
           common.legend = TRUE, legend = "bottom", 
           font.label = list(size = 10),
           hjust = c(-0.5, -0.35, -0.5, -0.35, -0.9, -0.5))
+### Supplemental native grasses and non-native forbs
+S2a <- ggplot(subset(rich1, func == "forb non-native"&year%in%c(2004:2008)), aes(year, mean_rich)) +
+  geom_line(aes(color=as.factor(trt)), linetype="dashed") +
+  geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
+  geom_point(aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(rich1, func=="forb non-native"&year%in%c(2008:2012)), aes(color=as.factor(trt))) +
+  geom_errorbar(data=subset(rich1, func=="forb non-native"&year%in%c(2008:2012)), aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
+  geom_point(data=subset(rich1, func=="forb non-native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(rich1, func=="forb non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
+  labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
+  scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  annotate("text", x= 2004.5, y = .8, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = .8, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3)+
+  geom_segment(aes(x=2004.5, y=.75, xend=2004.5, yend=.65), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=.75, xend=2008.5, yend=.65), arrow=arrow(length = unit(0.03, "npc"))) + 
+  ggtitle("")
+
+
+S2b <- ggplot(subset(rich1, func == "grass native"&year%in%c(2004:2008)), aes(year, mean_rich)) +
+  geom_line(aes(color=as.factor(trt)), linetype="dashed") +
+  geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
+  geom_point(aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(rich1, func=="grass native"&year%in%c(2008:2012)), aes(color=as.factor(trt))) +
+  geom_errorbar(data=subset(rich1, func=="grass native"&year%in%c(2008:2012)), aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
+  geom_point(data=subset(rich1, func=="grass native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(rich1, func=="grass native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
+  geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
+  geom_point(aes(fill=as.factor(trt)), pch = 21) +
+  labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
+  scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  ggtitle("")+
+  annotate("text", x= 2004.5, y = 1, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = 1, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3)+
+  geom_segment(aes(x=2004.5, y=.9, xend=2004.5, yend=.8), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=.9, xend=2008.5, yend=.8), arrow=arrow(length = unit(0.03, "npc")))
+
+
+S2c <- ggplot(subset(cov1,func == "forb non-native"&year%in%c(2004:2008)), aes((year), meanrelcov*100))+
+  geom_line(aes(color=as.factor(trt)), linetype="dashed") +
+  geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
+  geom_point(aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(cov1, func=="forb non-native"&year%in%c(2008:2012)), aes(color=as.factor(trt))) +
+  geom_errorbar(data=subset(cov1, func=="forb non-native"&year%in%c(2008:2012)), aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
+  geom_point(data=subset(cov1, func=="forb non-native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(cov1, func=="forb non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
+  geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
+  geom_point(aes(fill=trt), pch = 21)+
+  labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
+  scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  ggtitle("")+
+  annotate("text", x= 2004.5, y = 10, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = 10, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3)+
+  geom_segment(aes(x=2004.5, y=9, xend=2004.5, yend=8), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=9, xend=2008.5, yend=8), arrow=arrow(length = unit(0.03, "npc"))) +   ggtitle("")
+
+S2d <- ggplot(subset(cov1, func == "grass native"&year%in%c(2004:2008)), aes((year), meanrelcov*100))+
+  geom_line(aes(color=as.factor(trt)), linetype="dashed") +
+  geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
+  geom_point(aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(cov1, func=="grass native"&year%in%c(2008:2012)), aes(color=as.factor(trt))) +
+  geom_errorbar(data=subset(cov1, func=="grass native"&year%in%c(2008:2012)), aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
+  geom_point(data=subset(cov1, func=="grass native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
+  geom_line(data=subset(cov1, func=="grass native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
+  labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
+  scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  annotate("text", x= 2004.5, y = 6.5, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = 6.5, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3)+
+  geom_segment(aes(x=2004.5, y=6, xend=2004.5, yend=5), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=6, xend=2008.5, yend=5), arrow=arrow(length = unit(0.03, "npc"))) + 
+  ggtitle("")
+
+
+ggarrange(S2a, S2b, S2c, S2d,  ncol = 2, nrow = 2, 
+          labels = c("a) Non-native forb richness", "b) Native grass richness",
+                     "c) Non-native forb cover", "d) Native grass cover"),
+          common.legend = TRUE, legend = "bottom", 
+          font.label = list(size = 10),
+          hjust = c(-0.5, -0.35, -0.5, -0.35))
+
+
 ###
 #Litter, precip and native forb regression
 ###
@@ -467,6 +564,7 @@ ggarrange(rich.lit.fig, cov.lit.fig, rich.prec.fig, cov.prec.fig, litprec, ncol=
 
 #write.csv(indsum1, file = "Grazing_indicator_sp.csv")
 
+<<<<<<< HEAD
 #is it all just TRANSECTS?
 covcovcov<-covcov%>%
   group_by(func, year, transect, trt)%>%
@@ -478,3 +576,15 @@ ggplot(subset(covcovcov,func == "forb native"&year%in%c(2004:2012)), aes((year),
   geom_errorbar(aes(ymin=relcov2*100-relse*100, ymax=relcov2*100+relse*100, color=transect), width=.2)+
   ggtitle("")+
   facet_wrap(~trt)
+=======
+richrichrich <- richrich %>%
+  group_by(func, year, transect, trt) %>%
+  summarize(rich1 = mean(richness), richse1 = calcSE(richness))
+ggplot(subset(richrichrich, func == "forb native"&year%in%c(2005:2012)), aes(year, rich1)) +
+  geom_point(aes(color=as.factor(transect)), pch = 21) +
+  geom_line(aes(color=as.factor(transect))) +
+  facet_wrap(aes(color=as.factor(trt))) +
+  geom_errorbar(aes(ymin = rich1-richse1, ymax = rich1+richse1, color = as.factor(transect))) +
+  theme_bw()
+  
+>>>>>>> f780852f9a3ead5e140c4f03efe63fb2bbc99adb
