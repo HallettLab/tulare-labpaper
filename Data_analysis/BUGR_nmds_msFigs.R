@@ -8,7 +8,6 @@ library(RVAideMemoire) #for posthoc tests on permanova
 library(indicspecies)
 library(gridExtra)
 library(goeveg)#for scree plot of NMDS to test number of dimensions
-library(ggplot2)
 
 ## Set ggplot2 theme
 theme_set(theme_bw())
@@ -29,7 +28,7 @@ all.dat<- right_join(all.dat,env, by=c("quadratNew", "year"))
 all.dat<- all.dat %>% filter(rock<75)
 
 #create wide data, first filter so year is 2005 to 2012
-all.data<- all.dat %>% dplyr::select(-X1.x, -spcode, -bare,-rock,-litter,-cowpie,-gopher) %>% filter(year>2004 & year < 2013) %>% spread(spname, cover)
+all.data<- all.dat %>% dplyr::select(-X1.x, -spcode, -bare,-rock,-litter,-cowpie,-gopher) %>% filter(year>2003 & year < 2013) %>% spread(spname, cover)
 all.data[is.na(all.data)] <- 0 #replace NAs with 0 (species not counted in plots have NAs when wide dataset created)
 levels(as.factor(all.dat$quadratNew))
 levels(as.factor(all.dat$thermal))
@@ -43,7 +42,7 @@ levels(as.factor(all.dat$graze))
 #######2005-2008#############
 
 #create wide data, first filter so year is 2005 to 2008
-mod.data.early<- all.dat %>% dplyr::select(-X1.x, -spcode, -bare, -rock, -litter, -cowpie, -gopher) %>% filter(year>2004 & year < 2009) %>% filter(thermal=="moderate") %>% spread(spname, cover)
+mod.data.early<- all.dat %>% dplyr::select(-X1.x, -spcode, -bare, -rock, -litter, -cowpie, -gopher) %>% filter(year>2003 & year < 2009) %>% filter(thermal=="moderate") %>% spread(spname, cover)
 mod.data.early[is.na(mod.data.early)] <- 0 #replace NAs with 0 (species not counted in plots have NAs when wide dataset created)
 
 #check count of thermal factor
@@ -231,7 +230,7 @@ summary(mod_isa_08)
 #####################
 #successional vectors on summarized MODERATE data for burn (2005-2008)
 ####################
-mod_yr_burn<-all.dat %>% dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2004 & year<2009) %>% 
+mod_yr_burn<-all.dat %>% dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2003 & year<2009) %>% 
   summarize(mean=mean(cover))%>% arrange(burn)%>%  arrange(graze)%>% arrange(year)%>%
   spread(spname, mean) %>% dplyr::select(-Unknown)
 mod_yr_burn <- mod_yr_burn %>%
@@ -270,10 +269,16 @@ spscoresall.vec<-data.frame(burn,year,spscores1.vec,spscores2.vec)
 #to plot indicator species (from above) on plot
 species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
-spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name == "Rigiopappus.leptoclodus" |name=="Poa.secunda.ssp..secunda"| name=="Festuca.bromoides"|name=="Koeleria.macrantha"| name=="Galium.aparine"| name=="Festuca.myuros"| name=="Layia.gaillardiodes"| name=="Athysanus.pusilus"|name=="Sisyrinchium.bellum"|name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Sanicula.bipinnatifida"|name=="Lessingia.micradenia.glabratai"|name=="Triteleia.laxa"| name=="Allium.serra"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Erodium.cicutarium"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"| name=="Hemizonia.congesta"| name=="Castilleja.densiflora"| name=="Microseris.douglasii"|name=="Calandrinia.ciliata"| name=="Agoseris.heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis")
+spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name=="Festuca.bromoides"| name=="Festuca.myuros"| name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"|  name=="Castilleja.densiflora"| name=="Calandrinia.ciliata"| name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis"|name=="Avena.sp."|name=="Acmispon.wrangelianus"|name=="Hemizonia.congesta"|name=="Crassula.connata")
+#spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name == "Rigiopappus.leptoclodus" |name=="Poa.secunda.ssp..secunda"| name=="Festuca.bromoides"|name=="Koeleria.macrantha"| name=="Galium.aparine"| name=="Festuca.myuros"| name=="Layia.gaillardiodes"| name=="Athysanus.pusilus"|name=="Sisyrinchium.bellum"|name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Sanicula.bipinnatifida"|name=="Lessingia.micradenia.glabratai"|name=="Triteleia.laxa"| name=="Allium.serra"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Erodium.cicutarium"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"| name=="Hemizonia.congesta"| name=="Castilleja.densiflora"| name=="Microseris.douglasii"|name=="Calandrinia.ciliata"| name=="Agoseris.heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis")
 #spc.e<- species.e %>% filter(name == "Trifolium depauperatum"| name == "Rigiopappus leptoclodus" |name=="Poa secunda ssp. secunda"| name=="Festuca bromoides"|name=="Koeleria macrantha"| name=="Galium aparine"| name=="Festuca myuros"| name=="Layia gaillardiodes"| name=="Athysanus pusilus"|name=="Sisyrinchium bellum"|name=="Epilobium sp."| name=="Chlorogalum pomeridianum"|name=="Sanicula bipinnatifida"|name=="Lessingia micradenia glabratai"|name=="Triteleia laxa"| name=="Allium serra"|name=="Plantago erecta"|name=="Lasthenia californica"|name=="Aphanes occidentalis"|name=="Erodium cicutarium"|name=="Gilia tricolor"|name=="Lepidium nitidum"| name=="Hemizonia congesta"| name=="Castilleja densiflora"| name=="Microseris douglasii"|name=="Calandrinia ciliata"|name=="Agoseris heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea spp."|name=="Hordeum murinum ssp. leporinum"|name=="Muilla maritima"|name=="Festuca perennis")
+#move plantago erecta down a little so it doesn't overlap with Lasthenia
+spc.e$MDS2[spc.e$name == "Plantago.erecta"] <- 0.10
+spc.e$MDS1[spc.e$name == "Festuca.bromoides"] <- -0.9
+spc.e$MDS1[spc.e$name == "Trifolium.depauperatum"] <- -0.9
 
 vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
+  xlim(-1,1)+
   ggtitle("a) Change over time after fire from 2005 - 2008")+
   geom_path(arrow=arrow(), aes(col=mod_yr_burn$treatment))+
   scale_color_manual(values=c("grey0", "grey60","grey85"))+
