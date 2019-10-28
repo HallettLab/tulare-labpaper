@@ -4,25 +4,50 @@
 # all years = grazed plots are grazed
 library(ggplot2); theme_set(theme_classic())
 
+#load environmental data
+envdat <- read_csv(paste(datpath_clean, "/envdat.csv", sep = "")) %>%
+  select(-1) 
+
+#check which plots were ever greater than or equal to 80% rock
+check <- envdat %>% 
+  group_by(quadratNew) %>%
+  filter(max(rock)>79)
+
+#load community data
 alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
   select(-1)%>%
   filter(transect%in%c("THBUGM1", "THBUGM2", "THM1", "THM2", "THM3", "THM4", "THUBUGM1", "THUBUGM2"))%>%
-  filter(!quadratNew%in%c("THM1-1", "THM3-3", "THM1-10"))%>%
+  filter(!quadratNew%in%c("THM1-1", "THM3-3", "THM1-10"))%>% #remove plots with greater than or equal to 80% rock
   filter(thermal=="moderate")%>%
   group_by(year, spname, spcode, quadratNew, status, type, transect, burn, graze)%>%
   summarize(cover=sum(cover))
 
-
-
 # plot plantago
 pler <- alldat %>%
   filter(spcode == "PLA ERE") %>%
-  group_by(burn, year, graze, transect)  %>%
+  mutate(trt=paste(graze, burn))%>%
+  group_by(year, trt)  %>%
   summarize(meancover = mean(cover), secover = calcSE(cover))
 
-ggplot(pler, aes(x=year, y = meancover, color = interaction(burn, graze, transect))) + geom_line() + 
-  geom_point() + facet_grid(burn~graze)
+ggplot(pler, aes(x=year, y = meancover, color = trt)) + geom_line() + 
+  geom_point(aes(fill = trt), pch = 21) +
+  geom_errorbar(aes(ymin=meancover-secover, ymax=meancover+secover, color=as.factor(trt)), width=.2) +
+  labs(x = "Year", y = "Absolute Cover (%)") +
+  theme(legend.position = "none") +
+  scale_x_continuous(limits = c(2000, 2018), breaks = c(2000, 2005, 2010, 2015)) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"))+
+  scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE)  +
+  annotate("text", x= 2004.5, y = 5, label = "fire", size = 3) +
+  geom_segment(aes(x=2004.5, y=2.5, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc")), color = "grey0") + 
+  annotate(geom = 'text', x= 2008.5, y = 30, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3) +
+  geom_segment(aes(x=2008.5, y=25, xend=2008.5, yend=20), arrow=arrow(length = unit(0.03, "npc")),  color = "grey0")
 
+#greater than 80% rock at some point
+#TMH1-1
+#TMH1-10
+#TMH3-3
 
 #plot timeseries of richness 
 rich <- alldat %>%
@@ -99,7 +124,7 @@ ggplot(cov1, aes((year), meancov))+
   geom_point(aes(color=trt))+
   geom_errorbar(aes(ymin=meancov-se_cov, ymax=meancov+se_cov, color=trt), width=.2)+
   facet_wrap(~func) +geom_vline(xintercept=2008.5)+geom_vline(xintercept=2004.5, color="red") +
-  labs(x = "Year", y = "Mean Cover (%)", color = "Treatment")
+  labs(x = "Year", y = "Mean Cover (%)", color = "Treatment") 
 
 ggplot(cov1, aes((year), meanrelcov))+
   geom_line(aes(color=trt))+
@@ -124,11 +149,6 @@ litn<-lit%>%
 ##########
 #Litter
 ##########
-
-#load environmental data
-envdat <- read_csv(paste(datpath_clean, "/envdat.csv", sep = "")) %>%
-  select(-1) 
-
 #join env data with master
 joindat <- left_join(alldat, envdat)
 
@@ -241,7 +261,7 @@ f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2005:2008)), aes(yea
   geom_errorbar(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
   geom_point(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
   geom_line(data=subset(rich1, func=="forb native"&year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
-  labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
+  labs(x = NULL, y = "Species Richness", fill = "Treatment")+
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   annotate("text", x= 2004.5, y = 1.5, label = "fire", size = 3) +
@@ -258,7 +278,8 @@ f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2005:2008)), aes(yea
   annotate("text", x= 2009, y = 10.5, label = "**", size = 4) +
   annotate("text", x= 2010, y = 10.5, label = "*", size = 4) +
   annotate("text", x= 2011, y = 10.5, label = "*", size = 4) +
-  annotate("text", x= 2012, y = 10.5, label = "", size = 4)
+  annotate("text", x= 2012, y = 10.5, label = "", size = 4) +
+  scale_x_continuous(limits=c(2004, 2012))
 
 f2b <- ggplot(subset(rich1, func == "grass non-native"&year%in%c(2005:2008)), aes(year, mean_rich)) +
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
@@ -270,7 +291,7 @@ f2b <- ggplot(subset(rich1, func == "grass non-native"&year%in%c(2005:2008)), ae
   geom_line(data=subset(rich1, func=="grass non-native"&year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
   geom_point(aes(fill=as.factor(trt)), pch = 21) +
-  labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
+  labs(x = NULL, y = "Species Richness", fill = "Treatment")+
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   ggtitle("")+
@@ -287,7 +308,8 @@ f2b <- ggplot(subset(rich1, func == "grass non-native"&year%in%c(2005:2008)), ae
   annotate("text", x= 2009, y = 3.5, label = "", size = 4) +
   annotate("text", x= 2010, y = 3.5, label = "", size = 4) +
   annotate("text", x= 2011, y = 3.5, label = "", size = 4) +
-  annotate("text", x= 2012, y = 3.5, label = "*", size = 4)
+  annotate("text", x= 2012, y = 3.5, label = "*", size = 4) +
+  scale_x_continuous(limits=c(2004, 2012))
 
 f3b <- ggplot(subset(cov1,func == "forb native"&year%in%c(2005:2008)), aes((year), meanrelcov*100))+
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
@@ -299,7 +321,7 @@ f3b <- ggplot(subset(cov1,func == "forb native"&year%in%c(2005:2008)), aes((year
   geom_line(data=subset(cov1, func=="forb native"&year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
   geom_point(aes(fill=trt), pch = 21)+
-  labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
+  labs(x = NULL, y = "Relative Cover (%)", fill = "Treatment") +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   ggtitle("")+
@@ -316,7 +338,9 @@ f3b <- ggplot(subset(cov1,func == "forb native"&year%in%c(2005:2008)), aes((year
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3)+
   geom_segment(aes(x=2004.5, y=5, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
-  geom_segment(aes(x=2008.5, y=5, xend=2008.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) +   ggtitle("")
+  geom_segment(aes(x=2008.5, y=5, xend=2008.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) +   
+  ggtitle("") +
+  scale_x_continuous(limits=c(2004, 2012))
 
 f4b <- ggplot(subset(cov1, func == "grass non-native"&year%in%c(2005:2008)), aes((year), meanrelcov*100))+
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
@@ -326,7 +350,7 @@ f4b <- ggplot(subset(cov1, func == "grass non-native"&year%in%c(2005:2008)), aes
   geom_errorbar(data=subset(cov1, func=="grass non-native"&year%in%c(2008:2012)), aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
   geom_point(data=subset(cov1, func=="grass non-native"&year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
   geom_line(data=subset(cov1, func=="grass non-native"&year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
-  labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
+  labs(x = NULL, y = "Relative Cover (%)", fill = "Treatment") +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   annotate("text", x= 2004.5, y = 9, label = "fire", size = 3) +
@@ -343,21 +367,21 @@ f4b <- ggplot(subset(cov1, func == "grass non-native"&year%in%c(2005:2008)), aes
   annotate("text", x= 2009, y = 95, label = "**", size = 4) +
   annotate("text", x= 2010, y = 95, label = "**", size = 4) +
   annotate("text", x= 2011, y = 95, label = "", size = 4) +
-  annotate("text", x= 2012, y = 95, label = "*", size = 4)
+  annotate("text", x= 2012, y = 95, label = "*", size = 4) +
+  scale_x_continuous(limits=c(2004, 2012))
 
-f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
+f5b <- ggplot(subset(litter, year%in%c(2007:2008)), aes(year, mean_litter)) +
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
   geom_errorbar(aes(ymin=mean_litter-se_litter, ymax=mean_litter+se_litter, color=as.factor(trt)), width=.2) +
   geom_point(aes(fill=as.factor(trt)), pch = 21) +
   geom_line(data=subset(litter, year%in%c(2008:2012)), aes(color=as.factor(trt))) +
   geom_errorbar(data=subset(litter, year%in%c(2008:2012)), aes(ymin=mean_litter-se_litter, ymax=mean_litter+se_litter, color=as.factor(trt)), width=.2)+
   geom_point(data=subset(litter, year%in%c(2008:2012)), aes(fill=as.factor(trt)), pch = 21) +
-  geom_line(data=subset(litter, year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
-  labs(x = NULL, y = "Mean Litter Cover (%)", fill = "Treatment") +
+  geom_line(data=subset(litter, year%in%c(2007:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
+  labs(x = NULL, y = "Absolute Cover (%)", fill = "Treatment") +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   ggtitle("")+
-  annotate("text", x= 2006, y = 40, label = "**", size = 4) +
   annotate("text", x= 2007, y = 40, label = "***", size = 4) +
   annotate("text", x= 2008, y = 40, label = "**", size = 4) +
   annotate("text", x= 2009, y = 40, label = "***", size = 4) +
@@ -366,18 +390,23 @@ f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
   annotate("text", x= 2012, y = 40, label = "***", size = 4) +
   annotate("text", x= 2004.5, y = 5, label = "fire", size = 3) +
   geom_segment(aes(x=2004.5, y=2.5, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
-  ggtitle("")
+  annotate(geom = 'text', x= 2008.5, y = 35, 
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, size=3) +
+  geom_segment(aes(x=2008.5, y=30, xend=2008.5, yend=26), arrow=arrow(length = unit(0.03, "npc"))) +
+  scale_x_continuous(limits=c(2004, 2012))
 
 #load "prism grow" from BUGR_timeseries.R
 f6b <- ggplot(subset(prism_grow, year%in%c(2004:2012)), aes(year, prcp)) +
   geom_bar(stat = "identity", fill = "lightgrey") +
   labs(x = NULL, y = "Mean Annual Precip (mm)") +
-  ggtitle("")
+  ggtitle("") +
+  scale_x_continuous(limits=c(2004, 2012.5))
 
 ggarrange(f1b, f2b, f3b, f4b, f5b, f6b,  ncol = 2, nrow = 3, 
           labels = c("a) Native forb", "b) Non-native grass",
                      "c) Native forb", "d) Non-native grass", "e) Litter", "f) Precipitation"),
-          common.legend = TRUE, legend = "bottom", 
+          legend = "none",  
           font.label = list(size = 10),
           hjust = c(-0.5, -0.35, -0.5, -0.35, -0.9, -0.5))
 ###
