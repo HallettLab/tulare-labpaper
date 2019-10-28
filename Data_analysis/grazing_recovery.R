@@ -17,10 +17,10 @@ alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
 # plot plantago
 pler <- alldat %>%
   filter(spcode == "PLA ERE") %>%
-  group_by(burn, year, graze)  %>%
+  group_by(burn, year, graze, transect)  %>%
   summarize(meancover = mean(cover), secover = calcSE(cover))
 
-ggplot(pler, aes(x=year, y = meancover, color = interaction(burn, graze))) + geom_line() + 
+ggplot(pler, aes(x=year, y = meancover, color = interaction(burn, graze, transect))) + geom_line() + 
   geom_point() + facet_grid(burn~graze)
 
 
