@@ -10,6 +10,10 @@ library(nlme) #linear mixed models
 #richness, cover, evenness, litter as dependent variables
 #focus on two functional groups: native forbs and non-native grasses
 ########
+#Plantago erecta
+#load "pler" from grazing_recovery.R
+
+
 
 #Richness
 #load "rich" from grazing_recovery.R

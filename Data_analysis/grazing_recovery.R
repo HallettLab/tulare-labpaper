@@ -24,12 +24,13 @@ alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
 
 # plot plantago
 pler <- alldat %>%
-  filter(spcode == "PLA ERE") %>%
+  filter(spcode == "PLA ERE") 
+pler_graph <- pler %>%
   mutate(trt=paste(graze, burn))%>%
   group_by(year, trt)  %>%
   summarize(meancover = mean(cover), secover = calcSE(cover))
 
-ggplot(pler, aes(x=year, y = meancover, color = trt)) + geom_line() + 
+ggplot(pler_graph, aes(x=year, y = meancover, color = trt)) + geom_line() + 
   geom_point(aes(fill = trt), pch = 21) +
   geom_errorbar(aes(ymin=meancover-secover, ymax=meancover+secover, color=as.factor(trt)), width=.2) +
   labs(x = "Year", y = "Absolute Cover (%)") +
