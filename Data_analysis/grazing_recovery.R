@@ -24,9 +24,9 @@ alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
 
 # plot plantago
 pler <- alldat %>%
-  filter(spcode == "PLA ERE") 
+  filter(spcode == "PLA ERE") %>%
+  mutate(trt=paste(graze, burn))
 pler_graph <- pler %>%
-  mutate(trt=paste(graze, burn))%>%
   group_by(year, trt)  %>%
   summarize(meancover = mean(cover), secover = calcSE(cover))
 
