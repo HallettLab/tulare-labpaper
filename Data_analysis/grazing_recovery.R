@@ -12,6 +12,18 @@ alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
   group_by(year, spname, spcode, quadratNew, status, type, transect, burn, graze)%>%
   summarize(cover=sum(cover))
 
+
+
+# plot plantago
+pler <- alldat %>%
+  filter(spcode == "PLA ERE") %>%
+  group_by(burn, year, graze)  %>%
+  summarize(meancover = mean(cover), secover = calcSE(cover))
+
+ggplot(pler, aes(x=year, y = meancover, color = interaction(burn, graze))) + geom_line() + 
+  geom_point() + facet_grid(burn~graze)
+
+
 #plot timeseries of richness 
 rich <- alldat %>%
   filter(type!="NA", status!="NA")%>%
