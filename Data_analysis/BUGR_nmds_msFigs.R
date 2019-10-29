@@ -25,7 +25,7 @@ all.dat<-all.dat %>% dplyr::select(-status, -type)
 #import env data (litter, cowpies, rocks, etc)
 env <- read_csv(paste(datpath_clean, "/envdat.csv", sep=""))
 all.dat<- right_join(all.dat,env, by=c("quadratNew", "year"))
-all.dat<- all.dat %>% filter(rock<75)
+all.dat<- all.dat %>% group_by(quadratNew) %>% filter(max(rock)<79.9) #group by plot, then remove plot based on if max rock is over 80%
 
 #create wide data, first filter so year is 2005 to 2012
 all.data<- all.dat %>% dplyr::select(-X1.x, -spcode, -bare,-rock,-litter,-cowpie,-gopher) %>% filter(year>2003 & year < 2013) %>% spread(spname, cover)
@@ -48,7 +48,22 @@ mod.data.early[is.na(mod.data.early)] <- 0 #replace NAs with 0 (species not coun
 #check count of thermal factor
 mod.data.early %>% 
   group_by(graze, burn, transect) %>%
-  summarise(no_rows = length(thermal)) 
+  summarise(no_rows = length(thermal)) #note PGEM transects have very little data, they are only in 2006
+
+#remove transects that do not span all years
+mod.data.early <- mod.data.early %>% filter(transect!="PGEM1", transect!="PGEM2", transect!="PGEM3",transect!="PGEM4")
+
+#combine Festuca myuros and Festuca bromoides
+mod.data.early <- mod.data.early %>% group_by(year, quadratNew) %>% mutate('Festuca sp.'=sum(`Festuca bromoides`, `Festuca myuros`)) %>%
+  dplyr::select(-`Festuca bromoides`,-`Festuca myuros`) %>% ungroup()
+
+#see which plots were removed due to high rock cover:
+mod.check<-mod.data.early %>% 
+  group_by(quadratNew) %>%
+  summarise(no_years = length(year))
+#TMH1-1
+#TMH1-10
+#THM3-3
 
 #check count of graze and burn factor
 mod.data.early %>% 
@@ -65,11 +80,11 @@ cover.mod.early<- mod.data.early.nozero %>% dplyr::select(-c(1:7), -Unknown) #wi
 rownames(cover.mod.early)<-plotnames
 
 #check for empty rows
-cover.Biodrop.mod.early<-cover.mod.early[rowSums(cover.mod.early[, (1:68)]) ==0, ] #if no empty rows, next step not needed
+cover.Biodrop.mod.early<-cover.mod.early[rowSums(cover.mod.early[, (1:66)]) ==0, ] #if no empty rows, next step not needed
 #cover.Biodrop.gb<-cover.gb[rowSums(cover.gb[, (1:157)])  >0 ]#remove empty rows
 
 #if needed, relativize by row or column or calculate presence/absence
-cover.rowsums.me <- rowSums(cover.mod.early [1:68])
+cover.rowsums.me <- rowSums(cover.mod.early [1:66])
 cover.relrow.me <- data.frame(cover.mod.early /cover.rowsums.me)
 #cover.colmax<-sapply(cover.mod.early ,max)
 #cover.relcolmax <- data.frame(sweep(cover.Bio ,2,cover.colmax,'/'))
@@ -82,7 +97,7 @@ mod.data.early$covercheck<-cover.rowsums.me#remove plots with very low cover?
 #make bray-curtis dissimilarity matrix
 mod.bcd.early <- vegdist(cover.relrow.me)
 dimcheckMDS(cover.relrow.me, distance = "bray", k = 8, trymax = 20, autotransform = F) #check for optimal dimensions - choose when starts to flatten out
-mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", trace = TRUE, noshare=0.02, autotransform=F, trymax=100, k=6) #runs several with different starting configurations
+mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", trace = TRUE, noshare=0.02, autotransform=F, trymax=1000, k=6) #runs several with different starting configurations
 mod.mds.early #solution did not converge after 100 tries, try 1000 more runs
 #mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", previous.best = mod.mds.early, noshare=0.02, trace = TRUE, autotransform=T, trymax=1000, k=8)
 #mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", previous.best = mod.mds.early, noshare=0.02, trace = TRUE, autotransform=T, trymax=5000, k=8)
@@ -230,15 +245,19 @@ summary(mod_isa_08)
 #####################
 #successional vectors on summarized MODERATE data for burn (2005-2008)
 ####################
-mod_yr_burn<-all.dat %>% dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2003 & year<2009) %>% 
+mod_yr_burn<-all.dat %>%filter(transect!="PGEM1", transect!="PGEM2", transect!="PGEM3",transect!="PGEM4")%>%dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2003 & year<2009) %>% 
   summarize(mean=mean(cover))%>% arrange(burn)%>%  arrange(graze)%>% arrange(year)%>%
   spread(spname, mean) %>% dplyr::select(-Unknown)
 mod_yr_burn <- mod_yr_burn %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 mod_yr_burn[is.na(mod_yr_burn)] <- 0 
 
+#combine Festuca myuros and Festuca bromoides
+mod_yr_burn <- mod_yr_burn %>% group_by(year, treatment) %>% mutate('Festuca sp.'=sum(`Festuca bromoides`, `Festuca myuros`)) %>%
+  dplyr::select(-`Festuca bromoides`,-`Festuca myuros`) %>% ungroup()
+
 cover.yr <- mod_yr_burn %>% ungroup %>% dplyr::select(-thermal,-burn,-graze, -year, -treatment)
-cover.rowsums <- rowSums(cover.yr [1:155])
+cover.rowsums <- rowSums(cover.yr [1:154])
 cover.relrow <- data.frame(cover.yr /cover.rowsums)
 
 #merge env to match full data
@@ -305,9 +324,8 @@ lay <- rbind(c(1,1,1,1),
              c(2,2,3,3),
              c(4,4,5,5),
              c(4,4,5,5),
-             c(4,4,5,5),
-             c(6,6,6,6))
-grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, mylegend, layout_matrix = lay) #put panel together
+             c(4,4,5,5))
+grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, layout_matrix = lay) #put panel together
 #save as 1200W x 1800L
 
 ################
