@@ -10,6 +10,17 @@ library(nlme) #linear mixed models
 #richness, cover, evenness, litter as dependent variables
 #focus on two functional groups: native forbs and non-native grasses
 ########
+#Plantago erecta
+#load "pler" from grazing_recovery.R
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2005)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2006)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2007)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2008)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2009)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2010)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2011)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2012)))
+TukeyHSD()
 
 #Richness
 #load "rich" from grazing_recovery.R
