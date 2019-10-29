@@ -13,9 +13,9 @@ library(goeveg)#for scree plot of NMDS to test number of dimensions
 theme_set(theme_bw())
 theme_update( panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
               strip.background = element_blank(),
-              text = element_text(size = 20),
-              strip.text= element_text(size = 17), 
-              axis.text = element_text(size = 14))
+              text = element_text(size = 14),
+              strip.text= element_text(size = 12), 
+              axis.text = element_text(size = 10))
 
 # Import csv file, transform to wide data
 all.dat <- read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep=""))
@@ -268,7 +268,7 @@ vec.bcd <- vegdist(cover.relrow)
 dimcheckMDS(cover.relrow)#check for optimal dimensions
 
 #NMDS 
-vec.mds<-metaMDS(cover.relrow, distance="bray", trace = TRUE, autotransform = T, noshare=0.02, trymax=100, k=4) #runs several with different starting configurations
+vec.mds<-metaMDS(cover.relrow, distance="bray", trace = TRUE, autotransform = T, noshare=0.02, trymax=1000, k=4) #runs several with different starting configurations
 #trace= TRUE will give output for step by step what its doing
 #default is 2 dimensions, can put k=4 for 4 dimensions
 vec.mds #solution converged after 20 tries
@@ -288,7 +288,7 @@ spscoresall.vec<-data.frame(burn,year,spscores1.vec,spscores2.vec)
 #to plot indicator species (from above) on plot
 species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
-spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name=="Festuca.bromoides"| name=="Festuca.myuros"| name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"|  name=="Castilleja.densiflora"| name=="Calandrinia.ciliata"| name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis"|name=="Avena.sp."|name=="Acmispon.wrangelianus"|name=="Hemizonia.congesta"|name=="Crassula.connata")
+spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Plantago.erecta"| name=="Lepidium.nitidum"|name=="Aphanes.occidentalis"|name=="Castilleja.densiflora"|name=="Brodiaea.spp."|name=="Hemizonia.congesta"|name=="Acmispon.wrangelianus"| name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.")
 #spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name == "Rigiopappus.leptoclodus" |name=="Poa.secunda.ssp..secunda"| name=="Festuca.bromoides"|name=="Koeleria.macrantha"| name=="Galium.aparine"| name=="Festuca.myuros"| name=="Layia.gaillardiodes"| name=="Athysanus.pusilus"|name=="Sisyrinchium.bellum"|name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Sanicula.bipinnatifida"|name=="Lessingia.micradenia.glabratai"|name=="Triteleia.laxa"| name=="Allium.serra"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Erodium.cicutarium"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"| name=="Hemizonia.congesta"| name=="Castilleja.densiflora"| name=="Microseris.douglasii"|name=="Calandrinia.ciliata"| name=="Agoseris.heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis")
 #spc.e<- species.e %>% filter(name == "Trifolium depauperatum"| name == "Rigiopappus leptoclodus" |name=="Poa secunda ssp. secunda"| name=="Festuca bromoides"|name=="Koeleria macrantha"| name=="Galium aparine"| name=="Festuca myuros"| name=="Layia gaillardiodes"| name=="Athysanus pusilus"|name=="Sisyrinchium bellum"|name=="Epilobium sp."| name=="Chlorogalum pomeridianum"|name=="Sanicula bipinnatifida"|name=="Lessingia micradenia glabratai"|name=="Triteleia laxa"| name=="Allium serra"|name=="Plantago erecta"|name=="Lasthenia californica"|name=="Aphanes occidentalis"|name=="Erodium cicutarium"|name=="Gilia tricolor"|name=="Lepidium nitidum"| name=="Hemizonia congesta"| name=="Castilleja densiflora"| name=="Microseris douglasii"|name=="Calandrinia ciliata"|name=="Agoseris heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea spp."|name=="Hordeum murinum ssp. leporinum"|name=="Muilla maritima"|name=="Festuca perennis")
 #move plantago erecta down a little so it doesn't overlap with Lasthenia
@@ -298,7 +298,7 @@ spc.e$MDS1[spc.e$name == "Trifolium.depauperatum"] <- -0.9
 
 vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   xlim(-1,1)+
-  ggtitle("a) Change over time after fire from 2005 - 2008")+
+  ggtitle("a) Change in community composition after fire from 2005 - 2008")+
   geom_path(arrow=arrow(), aes(col=mod_yr_burn$treatment))+
   scale_color_manual(values=c("grey0", "grey60","grey85"))+
   geom_point(cex=6, aes(fill=mod_yr_burn$treatment), pch=21)+
@@ -336,6 +336,13 @@ grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, layout_matrix = lay) #put panel t
 mod.data.late<- all.dat %>% dplyr::select(-X1.x, -X1.y, -gopher, -bare, -rock, -litter, -cowpie, -spcode) %>% filter(year>2007 & year < 2013) %>% filter(thermal=="moderate") %>% spread(spname, cover)
 mod.data.late[is.na(mod.data.late)] <- 0 #replace NAs with 0 (species not counted in plots have NAs when wide dataset created)
 
+#remove transects that do not span all years
+mod.data.late <- mod.data.late %>% filter(transect!="PGEM1", transect!="PGEM2", transect!="PGEM3",transect!="PGEM4")
+
+#combine Festuca myuros and Festuca bromoides
+mod.data.late <- mod.data.late %>% group_by(year, quadratNew) %>% mutate('Festuca sp.'=sum(`Festuca bromoides`, `Festuca myuros`)) %>%
+  dplyr::select(-`Festuca bromoides`,-`Festuca myuros`) %>% ungroup()
+
 #check count of graze and burn factor
 mod.data.late %>% 
   group_by(graze, burn, transect) %>%
@@ -346,11 +353,11 @@ cover.mod.late<- mod.data.late %>% dplyr::select(-c(1:6)) #wide data with ID col
 rownames(cover.mod.late)<-plotnames
 
 #now relativize by row
-cover.rowsums.ml <- rowSums(cover.mod.late [1:156])
+cover.rowsums.ml <- rowSums(cover.mod.late [1:155])
 cover.relrow.ml <- data.frame(cover.mod.late /cover.rowsums.ml)
 
 #check for empty rows
-cover.Biodrop.mod.late<-cover.mod.late[rowSums(cover.mod.late[, (1:156)]) ==0, ] #if no empty rows, next step not needed
+cover.Biodrop.mod.late<-cover.mod.late[rowSums(cover.mod.late[, (1:155)]) ==0, ] #if no empty rows, next step not needed
 #cover.Biodrop.gb<-cover.gb[rowSums(cover.gb[, (1:157)])  >0 ]#remove empty rows
 
 ######################
@@ -362,7 +369,7 @@ mod.bcd.late <- vegdist(cover.relrow.ml)
 #check for optimal number of dimensions (optimum is when scree plot flattens out/break in slope, we'd also like the stress to be under 10% or 0.10)
 dimcheckMDS(cover.relrow.ml, distance = "bray", k = 8, trymax = 20, autotransform = F)
 
-mod.mds.late<-metaMDS(cover.relrow.ml, trace = TRUE, autotransform=F, noshare=0.01, trymax=100, k=5) #runs several with different starting configurations
+mod.mds.late<-metaMDS(cover.relrow.ml, trace = TRUE, autotransform=F, noshare=0.01, trymax=1000, k=5) #runs several with different starting configurations
 #trace= TRUE will give output for step by step what its doing
 #default is 2 dimensions, k=4 for 4 dimensions
 mod.mds.late #no solution reached
@@ -389,7 +396,7 @@ mod_trt_isa_late = multipatt(cover.relrow.ml, mod.trt.late$treatment, control=ho
 summary(mod_trt_isa_late)
 
 #create plot in ggplot 
-fig1b<-ggplot(subset(spscoresall.mod.l, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2b<-ggplot(subset(spscoresall.mod.l, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
   geom_point(cex=4.5)+
   ggtitle("b) 2008: grazing reintroduced")+
   xlim(-1,1)+
@@ -399,9 +406,9 @@ fig1b<-ggplot(subset(spscoresall.mod.l, year==2008), aes(x=NMDS1, y=NMDS2, fill=
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
-fig1b
+fig2b
 
-fig1c<-ggplot(subset(spscoresall.mod.l, year==2009), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2c<-ggplot(subset(spscoresall.mod.l, year==2009), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
   geom_point(cex=4.5)+
   ggtitle("c) 2009: 1 year post-grazing")+
   xlim(-1,1)+
@@ -411,10 +418,10 @@ fig1c<-ggplot(subset(spscoresall.mod.l, year==2009), aes(x=NMDS1, y=NMDS2, fill=
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
-fig1c
+fig2c
 #fig1c+geom_text(subset(spscoresall.mod.e, year==2009), mapping=aes(x=NMDS1, y=NMDS2, label=mod.2009$transect), cex=4)
 
-fig1d<-ggplot(subset(spscoresall.mod.l, year==2010), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2d<-ggplot(subset(spscoresall.mod.l, year==2010), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
   geom_point(cex=4.5)+
   ggtitle("d) 2010: 2 years post-grazing")+
   xlim(-1,1)+
@@ -424,9 +431,9 @@ fig1d<-ggplot(subset(spscoresall.mod.l, year==2010), aes(x=NMDS1, y=NMDS2, fill=
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
-fig1d
+fig2d
 
-fig1e<-ggplot(subset(spscoresall.mod.l, year==2011), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2e<-ggplot(subset(spscoresall.mod.l, year==2011), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
   geom_point(cex=4.5)+
   ggtitle("e) 2011: 3 years post-grazing")+
   xlim(-1,1)+
@@ -438,9 +445,9 @@ fig1e<-ggplot(subset(spscoresall.mod.l, year==2011), aes(x=NMDS1, y=NMDS2, fill=
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position="bottom", legend.title=element_text(size=11), legend.text=element_text(size=10), axis.text=element_text(size=8), axis.title=element_text(size=11))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1e
+fig2e
 
-fig1f<-ggplot(subset(spscoresall.mod.l, year==2012), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2f<-ggplot(subset(spscoresall.mod.l, year==2012), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
   geom_point(cex=4.5)+
   ggtitle("f) 2012: 4 years post-grazing")+
   xlim(-1,1)+
@@ -452,9 +459,9 @@ fig1f<-ggplot(subset(spscoresall.mod.l, year==2012), aes(x=NMDS1, y=NMDS2, fill=
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position="bottom", legend.title=element_text(size=11), legend.text=element_text(size=10), axis.text=element_text(size=8), axis.title=element_text(size=11))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1f
+fig2f
 
-fig1g<-ggplot(spscoresall.mod.l, aes(x=NMDS1, y=NMDS2, fill=spscoresall.mod.l$treatment, shape=as.factor(mod.data.late$year)))+
+fig2g<-ggplot(spscoresall.mod.l, aes(x=NMDS1, y=NMDS2, fill=spscoresall.mod.l$treatment, shape=as.factor(mod.data.late$year)))+
   geom_point(cex=4.5,pch = 21)+
   ggtitle("g)")+
   xlim(-1,1)+
@@ -465,7 +472,7 @@ fig1g<-ggplot(spscoresall.mod.l, aes(x=NMDS1, y=NMDS2, fill=spscoresall.mod.l$tr
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="left", legend.title=element_text(size=20), legend.text=element_text(size=17), axis.text=element_text(size=6), axis.title=element_text(size=11))+
   theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1g
+fig2g
 
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
@@ -473,13 +480,13 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-mylegend<-g_legend(fig1g)
+mylegend2<-g_legend(fig2g)
 
 ##test for differences in treatment by year#######
 mod.2008<-subset(mod.data.late, year==2008) %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 cover.2008<-mod.2008 %>% dplyr::select(-quadratNew,-treatment,-thermal,-burn,-graze, -year, -transect)
-cover.rowsums.08 <- rowSums(cover.2008 [1:156])
+cover.rowsums.08 <- rowSums(cover.2008 [1:155])
 cover.relrow.08 <- data.frame(cover.2008/cover.rowsums.08)
 mod.bcd.08 <- vegdist(cover.relrow.08)
 permanova08<-adonis(cover.relrow.08~mod.2008$treatment,perm=1000, method="bray")
@@ -491,7 +498,7 @@ summary(mod_isa_08)
 mod.2009<-subset(mod.data.late, year==2009) %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 cover.2009<-mod.2009 %>% dplyr::select(-quadratNew,-treatment,-thermal,-burn,-graze, -year, -transect)
-cover.rowsums.09 <- rowSums(cover.2009 [1:156])
+cover.rowsums.09 <- rowSums(cover.2009 [1:155])
 cover.relrow.09 <- data.frame(cover.2009/cover.rowsums.09)
 mod.bcd.09 <- vegdist(cover.relrow.09)
 permanova09<-adonis(cover.relrow.09~mod.2009$treatment, perm=1000, method="bray")
@@ -503,7 +510,7 @@ summary(mod_isa_09)
 mod.2010<-subset(mod.data.late, year==2010) %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 cover.2010<-mod.2010 %>% dplyr::select(-quadratNew,-treatment,-thermal,-burn,-graze, -year, -transect)
-cover.rowsums.10 <- rowSums(cover.2010 [1:156])
+cover.rowsums.10 <- rowSums(cover.2010 [1:155])
 cover.relrow.10 <- data.frame(cover.2010/cover.rowsums.10)
 mod.bcd.10 <- vegdist(cover.relrow.10)
 permanova10<-adonis(cover.relrow.10~mod.2010$treatment, perm=1000, method="bray")
@@ -515,7 +522,7 @@ summary(mod_isa_10)
 mod.2011<-subset(mod.data.late, year==2011) %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 cover.2011<-mod.2011 %>% dplyr::select(-quadratNew,-treatment,-thermal,-burn,-graze, -year, -transect)
-cover.rowsums.11 <- rowSums(cover.2011 [1:156])
+cover.rowsums.11 <- rowSums(cover.2011 [1:155])
 cover.relrow.11 <- data.frame(cover.2011/cover.rowsums.11)
 mod.bcd.11 <- vegdist(cover.relrow.11)
 permanova11<-adonis(cover.relrow.11~mod.2011$treatment, perm=1000, method="bray")
@@ -527,7 +534,7 @@ summary(mod_isa_11)
 mod.2012<-subset(mod.data.late, year==2012) %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
 cover.2012<-mod.2012 %>% dplyr::select(-quadratNew,-treatment,-thermal,-burn,-graze, -year, -transect)
-cover.rowsums.12 <- rowSums(cover.2012 [1:156])
+cover.rowsums.12 <- rowSums(cover.2012 [1:155])
 cover.relrow.12 <- data.frame(cover.2012/cover.rowsums.12)
 mod.bcd.12 <- vegdist(cover.relrow.12) 
 permanova12<-adonis(cover.relrow.12~mod.2012$treatment, perm=1000, method="bray")
@@ -539,13 +546,17 @@ summary(mod_isa_12)
 #####################
 #successional vectors on summarized MODERATE data for graze (2008-2012)
 ####################
-mod_yr_graze<-all.dat %>% dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2007 & year<2013) %>% dplyr::select(-X1.x, -X1.y, -gopher, -bare, -rock, -litter, -cowpie)%>%
+mod_yr_graze<-all.dat %>% filter(transect!="PGEM1", transect!="PGEM2", transect!="PGEM3",transect!="PGEM4")%>%dplyr::group_by(thermal, burn, graze, year, spname) %>% filter(thermal == "moderate", year>2007 & year<2013) %>% dplyr::select(-X1.x, -X1.y, -gopher, -bare, -rock, -litter, -cowpie)%>%
   summarize(mean=mean(cover))%>% arrange(burn)%>%  arrange(graze)%>% arrange(year)%>%
   spread(spname, mean) 
 mod_yr_graze[is.na(mod_yr_graze)] <- 0 
 
+#combine Festuca myuros and Festuca bromoides
+mod_yr_graze <- mod_yr_graze %>% group_by(year, burn, graze) %>% mutate('Festuca sp.'=sum(`Festuca bromoides`, `Festuca myuros`)) %>%
+  dplyr::select(-`Festuca bromoides`,-`Festuca myuros`) %>% ungroup()
+
 cover.yr <- mod_yr_graze %>% ungroup %>% dplyr::select(-thermal,-burn,-graze, -year)
-cover.rowsums <- rowSums(cover.yr [1:156])
+cover.rowsums <- rowSums(cover.yr [1:155])
 cover.relrow <- data.frame(cover.yr /cover.rowsums)
 
 #make bray-curtis dissimilarity matrix
@@ -554,7 +565,7 @@ dimcheckMDS(cover.relrow)#check for optimal dimensions
 #starts to flatten out around 5 or 6
 
 #NMDS 
-vec.mds<-metaMDS(cover.relrow, distance="bray", trace = TRUE, autotransform = T, noshare=0.02, trymax=100, k=5) #runs several with different starting configurations
+vec.mds<-metaMDS(cover.relrow, distance="bray", trace = TRUE, autotransform = T, noshare=0.02, trymax=1000, k=4) #runs several with different starting configurations
 #trace= TRUE will give output for step by step what its doing
 #default is 2 dimensions, can put k=4 for 4 dimensions
 vec.mds #solution converged after 20 tries
@@ -583,23 +594,23 @@ mod_yr_graze <- mod_yr_graze %>%
 #to plot indicator species (from above) on plot
 species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
-spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name=="Rigiopappus.leptoclodus"| name == "Deschampsia.danthoniodes" |name=="Stellaria.nitens"| name=="Cryptantha.flaccida"|name=="Sisyrinchium.bellum"| name=="Athysanus.pusilus"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"| name=="Amsinckia.intermedia"|name=="Sanicula.bipinnatifida"|name=="Allium.serra"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Bromus.madritensis" | name=="Festuca.myuros"| name =="Hordeum.murinum.ssp..leporinum" | name== "Festuca.microstachys"| name=="Calystegia.subacaulis" | name == "Festuca.perennis" | name == "Eriogonum.nudum")
+spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Plantago.erecta"| name=="Lepidium.nitidum"|name=="Aphanes.occidentalis"|name=="Castilleja.densiflora"|name=="Brodiaea.spp."|name=="Hemizonia.congesta"|name=="Acmispon.wrangelianus"| name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.")
 
-vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
+vec2<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   geom_path(arrow=arrow(), aes(col=mod_yr_graze$treatment))+
   scale_color_manual(values = c("grey0", "grey60", "grey85")) +
   geom_point(cex=6, pch = 21, aes(fill=mod_yr_graze$treatment))+
-  ggtitle("a) Change over time in response to grazing from 2008-2012")+
+  ggtitle("a) Change in community composition from 2008-2012 in response to grazing")+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position=c(0.8,0.8), legend.title=element_text(size=14), legend.text=element_text(size=12), axis.text=element_text(size=16), axis.title=element_text(size=16))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-vec1
+vec2
 
-vec1<-vec1+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=3)
-vec1
+vec2<-vec2+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=4)
+vec2
 
 #create layout for panel
 lay <- rbind(c(1,1,1,1),
@@ -612,8 +623,8 @@ lay <- rbind(c(1,1,1,1),
              c(4,4,5,5),
              c(4,4,5,5),
              c(4,4,5,5),
-             c(6,6,7,7),
-             c(6,6,7,7),
-             c(6,6,7,7))
-grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, fig1f, mylegend, layout_matrix = lay) #put panel together
+             c(6,6,NA,NA),
+             c(6,6,NA,NA),
+             c(6,6,NA,NA))
+grid.arrange(vec2, fig2b, fig2c, fig2d, fig2e, fig2f, layout_matrix = lay) #put panel together
 #save as 800w x 1200l
