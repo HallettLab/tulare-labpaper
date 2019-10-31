@@ -9,9 +9,14 @@ envdat <- read_csv(paste(datpath_clean, "/envdat.csv", sep = "")) %>%
   select(-1) 
 
 #check which plots were ever greater than or equal to 80% rock
-check <- envdat %>% 
-  group_by(quadratNew) %>%
-  filter(max(rock)>79)
+#check <- envdat %>% 
+#  group_by(quadratNew) %>%
+#  filter(max(rock)>79)
+
+#plots greater than 80% rock at some point
+#TMH1-1
+#TMH1-10
+#TMH3-3
 
 #load community data
 alldat<-read_csv(paste(datpath_clean, "/alldatsptrt.csv", sep="")) %>%
@@ -43,12 +48,16 @@ ggplot(pler_graph, aes(x=year, y = meancover, color = trt)) + geom_line() +
   annotate(geom = 'text', x= 2008.5, y = 30, 
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3) +
-  geom_segment(aes(x=2008.5, y=25, xend=2008.5, yend=20), arrow=arrow(length = unit(0.03, "npc")),  color = "grey0")
-
-#greater than 80% rock at some point
-#TMH1-1
-#TMH1-10
-#TMH3-3
+  geom_segment(aes(x=2008.5, y=25, xend=2008.5, yend=20), arrow=arrow(length = unit(0.03, "npc")),  color = "grey0") +
+  annotate("text", x= 2005, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2006, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2007, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2008, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2009, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2010, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2011, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2012, y = 42, label = "**", size = 4) +
+  annotate("text", x= 2013, y = 42, label = "*", size = 4) 
 
 #plot timeseries of richness 
 rich <- alldat %>%
@@ -147,6 +156,7 @@ ggplot(lit, aes((year), litter))+
 litn<-lit%>%
   group_by(year)%>%
   summarize(n())
+
 ##########
 #Litter
 ##########
