@@ -20,7 +20,12 @@ TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2009)))
 TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2010)))
 TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2011)))
 TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2012)))
-TukeyHSD()
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2013)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2014)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2015)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2016)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2017)))
+TukeyHSD(aov(cover~trt, data = pler%>%filter(year == 2018)))
 
 #Richness
 #load "rich" from grazing_recovery.R
