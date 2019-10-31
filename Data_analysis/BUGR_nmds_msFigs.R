@@ -8,6 +8,7 @@ library(RVAideMemoire) #for posthoc tests on permanova
 library(indicspecies)
 library(gridExtra)
 library(goeveg)#for scree plot of NMDS to test number of dimensions
+library(ggpubr)
 
 ## Set ggplot2 theme
 theme_set(theme_bw())
@@ -97,7 +98,7 @@ mod.data.early$covercheck<-cover.rowsums.me#remove plots with very low cover?
 #make bray-curtis dissimilarity matrix
 mod.bcd.early <- vegdist(cover.relrow.me)
 dimcheckMDS(cover.relrow.me, distance = "bray", k = 8, trymax = 20, autotransform = F) #check for optimal dimensions - choose when starts to flatten out
-mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", trace = TRUE, noshare=0.02, autotransform=F, trymax=1000, k=6) #runs several with different starting configurations
+mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", trace = TRUE, noshare=0.02, autotransform=F, trymax=1000, k=5) #runs several with different starting configurations
 mod.mds.early #solution did not converge after 100 tries, try 1000 more runs
 #mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", previous.best = mod.mds.early, noshare=0.02, trace = TRUE, autotransform=T, trymax=1000, k=8)
 #mod.mds.early<-metaMDS(cover.relrow.me, distance="bray", previous.best = mod.mds.early, noshare=0.02, trace = TRUE, autotransform=T, trymax=5000, k=8)
@@ -279,22 +280,32 @@ stressplot(vec.mds, vec.bcd) #stressplot to show fit
 ordiplot(vec.mds)
 
 #store scores in new dataframe
-spscores1.vec<-scores(vec.mds,display="sites",choices=1)
-spscores2.vec<-scores(vec.mds,display="sites",choices=2)
+spscores1.vec<-scores(vec.mds,display="sites",choices=1)*-1 #note multiplied by -1 to match orientation of previous ordinations
+spscores2.vec<-scores(vec.mds,display="sites",choices=2)*-1 #note multiplied by -1 to match orientation of previous ordinations
 year<-mod_yr_burn$year
 burn<-mod_yr_burn$burn
 spscoresall.vec<-data.frame(burn,year,spscores1.vec,spscores2.vec)
 
+
 #to plot indicator species (from above) on plot
-species.e<-as.data.frame(vec.mds$species)
+species.e<-as.data.frame(vec.mds$species)*-1 #note multiplied by -1 to match orientation of previous ordinations
 species.e$name<-row.names(species.e)
 spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Plantago.erecta"| name=="Lepidium.nitidum"|name=="Aphanes.occidentalis"|name=="Castilleja.densiflora"|name=="Brodiaea.spp."|name=="Hemizonia.congesta"|name=="Acmispon.wrangelianus"| name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.")
+spc.e <- spc.e %>% mutate(fontface = "bold", fontface = ifelse(name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.", "italic",  fontface)) #fontface based native/non-native
 #spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name == "Rigiopappus.leptoclodus" |name=="Poa.secunda.ssp..secunda"| name=="Festuca.bromoides"|name=="Koeleria.macrantha"| name=="Galium.aparine"| name=="Festuca.myuros"| name=="Layia.gaillardiodes"| name=="Athysanus.pusilus"|name=="Sisyrinchium.bellum"|name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Sanicula.bipinnatifida"|name=="Lessingia.micradenia.glabratai"|name=="Triteleia.laxa"| name=="Allium.serra"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Erodium.cicutarium"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"| name=="Hemizonia.congesta"| name=="Castilleja.densiflora"| name=="Microseris.douglasii"|name=="Calandrinia.ciliata"| name=="Agoseris.heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis")
 #spc.e<- species.e %>% filter(name == "Trifolium depauperatum"| name == "Rigiopappus leptoclodus" |name=="Poa secunda ssp. secunda"| name=="Festuca bromoides"|name=="Koeleria macrantha"| name=="Galium aparine"| name=="Festuca myuros"| name=="Layia gaillardiodes"| name=="Athysanus pusilus"|name=="Sisyrinchium bellum"|name=="Epilobium sp."| name=="Chlorogalum pomeridianum"|name=="Sanicula bipinnatifida"|name=="Lessingia micradenia glabratai"|name=="Triteleia laxa"| name=="Allium serra"|name=="Plantago erecta"|name=="Lasthenia californica"|name=="Aphanes occidentalis"|name=="Erodium cicutarium"|name=="Gilia tricolor"|name=="Lepidium nitidum"| name=="Hemizonia congesta"| name=="Castilleja densiflora"| name=="Microseris douglasii"|name=="Calandrinia ciliata"|name=="Agoseris heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea spp."|name=="Hordeum murinum ssp. leporinum"|name=="Muilla maritima"|name=="Festuca perennis")
-#move plantago erecta down a little so it doesn't overlap with Lasthenia
-spc.e$MDS2[spc.e$name == "Plantago.erecta"] <- 0.10
-spc.e$MDS1[spc.e$name == "Festuca.bromoides"] <- -0.9
-spc.e$MDS1[spc.e$name == "Trifolium.depauperatum"] <- -0.9
+#move species around a little so don't overlap on plot
+spc.e$MDS2[spc.e$name == "Festuca.sp."] <- 0.2
+spc.e$MDS1[spc.e$name == "Agoseris.heterophylla"] <- 0.7
+spc.e$MDS1[spc.e$name == "Lepidium.nitidum"] <- 0.35
+spc.e$MDS2[spc.e$name == "Plantago.erecta."] <- -0.06
+spc.e$MDS1[spc.e$name == "Calandrinia.ciliata"] <- 0.3
+spc.e$MDS1[spc.e$name == "Lasthenia.californica"] <- 0.78
+spc.e$MDS1[spc.e$name == "Castilleja.densiflora"] <- 0.65
+spc.e$MDS2[spc.e$name == "Aphanes.occidentalis"] <- -0.35
+spc.e$MDS2[spc.e$name == "Acmispon.wrangelianus"] <- -0.29
+spc.e$MDS2[spc.e$name == "Hemizonia.congesta"] <- -0.55
+spc.e$MDS1[spc.e$name == "Chlorogalum.pomeridianum"] <- -0.25
 
 vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   xlim(-1,1)+
@@ -311,7 +322,7 @@ vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
 vec1
 
-vec1<-vec1+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=3)
+vec1<-vec1+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name, fontface=fontface), cex=3)
 vec1
 
 #create layout for panel
@@ -327,6 +338,8 @@ lay <- rbind(c(1,1,1,1),
              c(4,4,5,5))
 grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, layout_matrix = lay) #put panel together
 #save as 1200W x 1800L
+
+
 
 ################
 ##Test effects of grazing reintroduction
