@@ -112,8 +112,8 @@ ordiplot(mod.mds.early)
 #store scores in new dataframe
 mod.data.early <- mod.data.early %>%
   unite(treatment, c(burn, graze), remove=FALSE, sep = " ")
-spscores1.mod.e<-scores(mod.mds.early,display="sites",choices=1)
-spscores2.mod.e<-scores(mod.mds.early,display="sites",choices=2)
+spscores1.mod.e<-scores(mod.mds.early,display="sites",choices=1)*-1 #note multiplication by -1 to make this ordination match orientation of grazing ordination
+spscores2.mod.e<-scores(mod.mds.early,display="sites",choices=2)*-1 #note multiplication by -1 to make this ordination match orientation of grazing ordination
 year<-mod.data.early$year
 treatment<-mod.data.early$treatment
 spscoresall.mod.e<-data.frame(year,treatment,spscores1.mod.e,spscores2.mod.e)
@@ -280,32 +280,33 @@ stressplot(vec.mds, vec.bcd) #stressplot to show fit
 ordiplot(vec.mds)
 
 #store scores in new dataframe
-spscores1.vec<-scores(vec.mds,display="sites",choices=1)*-1 #note multiplied by -1 to match orientation of previous ordinations
-spscores2.vec<-scores(vec.mds,display="sites",choices=2)*-1 #note multiplied by -1 to match orientation of previous ordinations
+spscores1.vec<-scores(vec.mds,display="sites",choices=1)
+spscores2.vec<-scores(vec.mds,display="sites",choices=2)
 year<-mod_yr_burn$year
 burn<-mod_yr_burn$burn
 spscoresall.vec<-data.frame(burn,year,spscores1.vec,spscores2.vec)
 
 
 #to plot indicator species (from above) on plot
-species.e<-as.data.frame(vec.mds$species)*-1 #note multiplied by -1 to match orientation of previous ordinations
+species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
 spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Plantago.erecta"| name=="Lepidium.nitidum"|name=="Aphanes.occidentalis"|name=="Castilleja.densiflora"|name=="Brodiaea.spp."|name=="Hemizonia.congesta"|name=="Acmispon.wrangelianus"| name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.")
 spc.e <- spc.e %>% mutate(fontface = "bold", fontface = ifelse(name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.", "italic",  fontface)) #fontface based native/non-native
 #spc.e<- species.e %>% filter(name == "Trifolium.depauperatum"| name == "Rigiopappus.leptoclodus" |name=="Poa.secunda.ssp..secunda"| name=="Festuca.bromoides"|name=="Koeleria.macrantha"| name=="Galium.aparine"| name=="Festuca.myuros"| name=="Layia.gaillardiodes"| name=="Athysanus.pusilus"|name=="Sisyrinchium.bellum"|name=="Epilobium.sp."| name=="Chlorogalum.pomeridianum"|name=="Sanicula.bipinnatifida"|name=="Lessingia.micradenia.glabratai"|name=="Triteleia.laxa"| name=="Allium.serra"|name=="Plantago.erecta"|name=="Lasthenia.californica"|name=="Aphanes.occidentalis"|name=="Erodium.cicutarium"|name=="Gilia.tricolor"|name=="Lepidium.nitidum"| name=="Hemizonia.congesta"| name=="Castilleja.densiflora"| name=="Microseris.douglasii"|name=="Calandrinia.ciliata"| name=="Agoseris.heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea.spp."|name=="Hordeum.murinum ssp..leporinum"|name=="Muilla.maritima"|name=="Festuca.perennis")
 #spc.e<- species.e %>% filter(name == "Trifolium depauperatum"| name == "Rigiopappus leptoclodus" |name=="Poa secunda ssp. secunda"| name=="Festuca bromoides"|name=="Koeleria macrantha"| name=="Galium aparine"| name=="Festuca myuros"| name=="Layia gaillardiodes"| name=="Athysanus pusilus"|name=="Sisyrinchium bellum"|name=="Epilobium sp."| name=="Chlorogalum pomeridianum"|name=="Sanicula bipinnatifida"|name=="Lessingia micradenia glabratai"|name=="Triteleia laxa"| name=="Allium serra"|name=="Plantago erecta"|name=="Lasthenia californica"|name=="Aphanes occidentalis"|name=="Erodium cicutarium"|name=="Gilia tricolor"|name=="Lepidium nitidum"| name=="Hemizonia congesta"| name=="Castilleja densiflora"| name=="Microseris douglasii"|name=="Calandrinia ciliata"|name=="Agoseris heterophylla"|name=="Bromus.madritensis"|name=="Brodiaea spp."|name=="Hordeum murinum ssp. leporinum"|name=="Muilla maritima"|name=="Festuca perennis")
 #move species around a little so don't overlap on plot
-spc.e$MDS2[spc.e$name == "Festuca.sp."] <- 0.2
-spc.e$MDS1[spc.e$name == "Agoseris.heterophylla"] <- 0.7
-spc.e$MDS1[spc.e$name == "Lepidium.nitidum"] <- 0.35
-spc.e$MDS2[spc.e$name == "Plantago.erecta."] <- -0.06
-spc.e$MDS1[spc.e$name == "Calandrinia.ciliata"] <- 0.3
-spc.e$MDS1[spc.e$name == "Lasthenia.californica"] <- 0.78
-spc.e$MDS1[spc.e$name == "Castilleja.densiflora"] <- 0.65
-spc.e$MDS2[spc.e$name == "Aphanes.occidentalis"] <- -0.35
-spc.e$MDS2[spc.e$name == "Acmispon.wrangelianus"] <- -0.29
-spc.e$MDS2[spc.e$name == "Hemizonia.congesta"] <- -0.55
-spc.e$MDS1[spc.e$name == "Chlorogalum.pomeridianum"] <- -0.25
+spc.e$MDS2[spc.e$name == "Festuca.sp."] <- -0.2
+spc.e$MDS1[spc.e$name == "Agoseris.heterophylla"] <- -0.7
+spc.e$MDS1[spc.e$name == "Lepidium.nitidum"] <- -0.35
+spc.e$MDS2[spc.e$name == "Plantago.erecta."] <- 0.06
+spc.e$MDS1[spc.e$name == "Calandrinia.ciliata"] <- -0.3
+spc.e$MDS1[spc.e$name == "Lasthenia.californica"] <- -0.78
+spc.e$MDS1[spc.e$name == "Castilleja.densiflora"] <- -0.65
+spc.e$MDS2[spc.e$name == "Aphanes.occidentalis"] <- 0.35
+spc.e$MDS2[spc.e$name == "Acmispon.wrangelianus"] <- 0.29
+spc.e$MDS2[spc.e$name == "Hemizonia.congesta"] <- 0.55
+spc.e$MDS1[spc.e$name == "Chlorogalum.pomeridianum"] <- 0.25
+spc.e$MDS2[spc.e$name == "Microseris.douglasii"] <- 0.7
 
 vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   xlim(-1,1)+
@@ -337,8 +338,8 @@ lay <- rbind(c(1,1,1,1),
              c(4,4,5,5),
              c(4,4,5,5))
 grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, layout_matrix = lay) #put panel together
-#save as 1200W x 1800L
-
+#save as 900W x 1200H
+#save PDF as 8x14" portrait
 
 
 ################
@@ -608,6 +609,10 @@ mod_yr_graze <- mod_yr_graze %>%
 species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
 spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Plantago.erecta"| name=="Lepidium.nitidum"|name=="Aphanes.occidentalis"|name=="Castilleja.densiflora"|name=="Brodiaea.spp."|name=="Hemizonia.congesta"|name=="Acmispon.wrangelianus"| name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.")
+spc.e <- spc.e %>% mutate(fontface = "bold", fontface = ifelse(name=="Festuca.sp."| name =="Hordeum.murinum.ssp..leporinum" | name == "Festuca.perennis" |name == "Avena.sp.", "italic",  fontface)) #fontface based native/non-native
+#move label over so not outside of plot margins
+spc.e$MDS1[spc.e$name == "Agoseris.heterophylla"] <- -0.7
+spc.e$MDS1[spc.e$name == "Chlorogalum.pomeridianum"] <- 0.4
 
 vec2<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   geom_path(arrow=arrow(), aes(col=mod_yr_graze$treatment))+
@@ -617,12 +622,13 @@ vec2<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
-  theme(plot.title = element_text(color="black", face="bold.italic"))
+  theme(plot.title = element_text(color="black", face="bold.italic"))+
+  xlim(-0.85,0.6)
 #theme(legend.position=c(0.8,0.8), legend.title=element_text(size=14), legend.text=element_text(size=12), axis.text=element_text(size=16), axis.title=element_text(size=16))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
 vec2
 
-vec2<-vec2+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=4)
+vec2<-vec2+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name, fontface=fontface), cex=4)
 vec2
 
 #create layout for panel
@@ -640,4 +646,7 @@ lay <- rbind(c(1,1,1,1),
              c(6,6,NA,NA),
              c(6,6,NA,NA))
 grid.arrange(vec2, fig2b, fig2c, fig2d, fig2e, fig2f, layout_matrix = lay) #put panel together
+#save as 900W X 1600H png
+#save as 8x18.7 PDF
+
 #save as 800w x 1200l
