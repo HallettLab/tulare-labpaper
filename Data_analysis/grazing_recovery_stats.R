@@ -359,12 +359,15 @@ lit_post <- lit %>%
   filter(year%in%c(2008:2012))
 anova_stats(anova(lm(litter~trt, data = lit_post)))
 
+
+
+
+
+
 ########
-#linear mixed models
+## LINEAR MIXED MODELS
 #grazed and burned as fixed effects, quadrats nested within transects as random
 ########
-
-#load "rich" from grazing_recovery.R
 
 # richness by year
 richrich<-rich%>%
@@ -372,200 +375,87 @@ richrich<-rich%>%
 #set the intercept to ungrazed burned for the third pair comparison
 richrich2<-richrich%>%
   ungroup()%>%
-  mutate(trt=as.factor(trt))
+  mutate(trt=as.factor(trt))%>%
+  filter(!is.na(richness))
 richrich2$trt <- factor(richrich2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
-
-rich_NF2005<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2005))
-rich_NF2005.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2005))
-rich_NF2006<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2006))
-rich_NF2006.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2006))
-rich_NF2007<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2007))
-rich_NF2007.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2007))
-rich_NF2008<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2008))
-rich_NF2008.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2008))
-rich_NF2009<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2009))
-rich_NF2009.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2009))
-rich_NF2010<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2010))
-rich_NF2010.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2010))
-rich_NF2011<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2011))
-rich_NF2011.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2011))
-rich_NF2012<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="forb native"&year==2012))
-rich_NF2012.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year==2012))
-rich_IG2005<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2005))
-rich_IG2005.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2005))
-rich_IG2006<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2006))
-rich_IG2006.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2006))
-rich_IG2007<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2007))
-rich_IG2007.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2007))
-rich_IG2008<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2008))
-rich_IG2008.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2008))
-rich_IG2009<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2009))
-rich_IG2009.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2009))
-rich_IG2010<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2010))
-rich_IG2010.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2010))
-rich_IG2011<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2011))
-rich_IG2011.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2011))
-rich_IG2012<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich, func=="grass non-native"&year==2012))
-rich_IG2012.2<-lme(richness~trt, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year==2012))
-
-summary(rich_NF2005)
-summary(rich_NF2005.2)
-summary(rich_NF2006)
-summary(rich_NF2006.2)
-summary(rich_NF2007)
-summary(rich_NF2007.2)
-summary(rich_NF2008)
-summary(rich_NF2008.2)
-summary(rich_NF2009)
-summary(rich_NF2009.2)
-summary(rich_NF2010)
-summary(rich_NF2010.2)
-summary(rich_NF2011)
-summary(rich_NF2011.2)
-summary(rich_NF2012)
-summary(rich_NF2012.2)
-summary(rich_IG2005)
-summary(rich_IG2005.2)
-summary(rich_IG2006)
-summary(rich_IG2006.2)
-summary(rich_IG2007)
-summary(rich_IG2007.2)
-summary(rich_IG2008)
-summary(rich_IG2008.2)
-summary(rich_IG2009)
-summary(rich_IG2009.2)
-summary(rich_IG2010)
-summary(rich_IG2010.2)
-summary(rich_IG2011)
-summary(rich_IG2011.2)
-summary(rich_IG2012)
-summary(rich_IG2012.2)
-
-# cover by year
-
 #load "cov" from grazing_recovery.R
-
 covcov<-cov%>%
   separate(quadratNew, into=c("transect2", "quadrat"), sep="-") 
-
 #set the intercept to ungrazed burned for the third pair comparison
 covcov2<-covcov%>%
   ungroup()%>%
-  mutate(trt=as.factor(trt))
+  mutate(trt=as.factor(trt))%>%
 covcov2$trt <- factor(covcov2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
-
-cov_NF2005<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2005))
-cov_NF2005.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2005))
-cov_NF2006<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2006))
-cov_NF2006.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2006))
-cov_NF2007<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2007))
-cov_NF2007.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2007))
-cov_NF2008<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2008))
-cov_NF2008.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2008))
-cov_NF2009<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2009))
-cov_NF2009.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2009))
-cov_NF2010<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2010))
-cov_NF2010.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2010))
-cov_NF2011<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2011))
-cov_NF2011.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2011))
-cov_NF2012<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="forb native"&year==2012))
-cov_NF2012.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year==2012))
-
-cov_IG2005<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2005))
-cov_IG2005.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2005))
-cov_IG2006<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2006))
-cov_IG2006.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2006))
-cov_IG2007<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2007))
-cov_IG2007.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2007))
-cov_IG2008<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2008))
-cov_IG2008.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2008))
-cov_IG2009<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2009))
-cov_IG2009.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2009))
-cov_IG2010<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2010))
-cov_IG2010.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2010))
-cov_IG2011<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2011))
-cov_IG2011.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2011))
-cov_IG2012<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov, func=="grass non-native"&year==2012))
-cov_IG2012.2<-lme(relcov~trt, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year==2012))
-
-summary(cov_NF2005)
-summary(cov_NF2005.2)
-summary(cov_NF2006)
-summary(cov_NF2006.2)
-summary(cov_NF2007)
-summary(cov_NF2007.2)
-summary(cov_NF2008)
-summary(cov_NF2008.2)
-summary(cov_NF2009)
-summary(cov_NF2009.2)
-summary(cov_NF2010)
-summary(cov_NF2010.2)
-summary(cov_NF2011)
-summary(cov_NF2011.2)
-summary(cov_NF2012)
-summary(cov_NF2012.2)
-
-summary(cov_IG2005)
-summary(cov_IG2005.2)
-summary(cov_IG2006)
-summary(cov_IG2006.2)
-summary(cov_IG2007)
-summary(cov_IG2007.2)
-summary(cov_IG2008)
-summary(cov_IG2008.2)
-summary(cov_IG2009)
-summary(cov_IG2009.2)
-summary(cov_IG2010)
-summary(cov_IG2010.2)
-summary(cov_IG2011)
-summary(cov_IG2011.2)
-summary(cov_IG2012)
-summary(cov_IG2012.2)
-
 #load "lit"
 litlit<-lit%>%
   separate(quadratNew, into=c("transect2", "quadrat"), sep="-") 
-
 #set the intercept to ungrazed burned for the third pair comparison
 litlit2<-litlit%>%
   ungroup()%>%
-  mutate(trt=as.factor(trt))
+  mutate(trt=as.factor(trt))%>%
+  filter(!is.na(litter))
 litlit2$trt <- factor(litlit2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
 
+
+##### MM:RICHNESS #####
+#native 2005-2008
+rich_NF2005.2008<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year<2009))
+summary(rich_NF2005.2008)
+summary(glht(rich_NF2005.2008, linfct=mcp(trt="Tukey")))
+
+#native 2009-2012
+rich_NF2009.2012<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year>2008))
+summary(rich_NF2009.2012)
+summary(glht(rich_NF2009.2012, linfct=mcp(trt="Tukey")))
+
+#nonnative 2005-2008
+rich_IG2005.2008<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year<2009))
+summary(rich_IG2005.2008)
+summary(glht(rich_IG2005.2008, linfct=mcp(trt="Tukey")))
+
+#nonnative 2009-2012
+rich_IG2009.2012<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year>2008))
+summary(rich_IG2009.2012)
+summary(glht(rich_IG2009.2012, linfct=mcp(trt="Tukey")))
+
+
+##### MM:COVER #####
+
+#native 2005-2008
+cov_NF0508<-lme(relcov~trt+year, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year<2009))
+summary(cov_NF0508)
+summary(glht(cov_NF0508, linfct=mcp(trt="Tukey")))
+
+#native 2009-2012
+cov_NF0912<-lme(relcov~trt+year, random = ~1|transect2/quadrat, data = subset(covcov2, func=="forb native"&year>2008))
+summary(cov_NF0912)
+summary(glht(cov_NF0912, linfct=mcp(trt="Tukey")))
+
+#nonnative 2005-2008
+cov_IG0508<-lme(relcov~trt+year, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year<2009))
+summary(cov_IG0508)
+summary(glht(cov_IG0508, linfct=mcp(trt="Tukey")))
+
+#non-native 2009-2012
+cov_IG0912<-lme(relcov~trt+year, random = ~1|transect2/quadrat, data = subset(covcov2, func=="grass non-native"&year>2008))
+summary(cov_IG0912)
+summary(glht(cov_IG0912, linfct=mcp(trt="Tukey")))
+
+##### MM:LITTER #####
+
 #lme of litter each year from 2006-2012
-lit_2006<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2006))
-lit_2006.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2,year==2006))
-lit_2007<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2007))
-lit_2007.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2007))
-lit_2008<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2008))
-lit_2008.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2008))
-lit_2009<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2009))
-lit_2009.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2009))
-lit_2010<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2010))
-lit_2010.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2010))
-lit_2011<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2011))
-lit_2011.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2011))
-lit_2012<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit, year==2012))
-lit_2012.2<-lme(litter~trt, random = ~1|transect2/quadrat, data = subset(litlit2, year==2012))
+lit_0508<-lme(litter~trt+year, random = ~1|transect2/quadrat, data = subset(litlit2,year<2009))
+summary(lit_0508)
+summary(glht(lit_0508, linfct=mcp(trt="Tukey")))
 
-summary(lit_2006)
-summary(lit_2006.2)
-summary(lit_2007)
-summary(lit_2007.2)
-summary(lit_2008)
-summary(lit_2008.2)
-summary(lit_2009)
-summary(lit_2009.2)
-summary(lit_2010)
-summary(lit_2010.2)
-summary(lit_2011)
-summary(lit_2011.2)
-summary(lit_2012)
-summary(lit_2012.2)
+lit_0912<-lme(litter~trt+year, random = ~1|transect2/quadrat, data = subset(litlit2, year>2008))
+summary(lit_0912)
+summary(glht(lit_0912, linfct=mcp(trt="Tukey")))
 
-##example from onoline
-lme(y ~ p_gender*t_gender + part_gen, data=grdata,
-    + random = list(~ p_gender | therapist, ~ 1 | group))
+
+
+
+
 
 ##plot lme stats
 
