@@ -384,7 +384,7 @@ covcov<-cov%>%
 #set the intercept to ungrazed burned for the third pair comparison
 covcov2<-covcov%>%
   ungroup()%>%
-  mutate(trt=as.factor(trt))%>%
+  mutate(trt=as.factor(trt))
 covcov2$trt <- factor(covcov2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
 #load "lit"
 litlit<-lit%>%
