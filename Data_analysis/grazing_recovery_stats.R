@@ -2,6 +2,7 @@ library(tidyverse)
 library(readr)
 library(sjstats) #standardized effect size cohen's f
 library(nlme) #linear mixed models
+library(multcomp) #tukey
 
 #load updated master data, "alldat", in grazing_recovery.R
 
