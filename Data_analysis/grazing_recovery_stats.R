@@ -510,7 +510,7 @@ lme4<-ggplot(subset(lmestats, func=="non-native grass"&response=="richness"), ae
   geom_vline(xintercept=2004.5, color="grey66", lty = 2)+
   xlab("")+ylab("")
 
-
+library(ggpubr)
 ggarrange(lme1, lme2, lme3, lme4,  ncol = 2, nrow = 2, 
           labels = c("a) Native forb cover", "b) Non-native grass cover",
                      "c) Native forb richness", "d) Non-native grass richness"),
