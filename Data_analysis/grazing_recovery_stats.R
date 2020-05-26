@@ -253,7 +253,7 @@ anova_stats(anova(lm(Shannon~trt1, data = shan2012%>%filter(func == "grass nativ
 lit <- joindat %>%
   mutate(trt=paste(graze, burn)) %>%
   ungroup() %>%
-  select(quadratNew, year, trt, transect, burn, graze, litter)
+  dplyr::select(quadratNew, year, trt, transect, burn, graze, litter)
 
 TukeyHSD(aov(litter~trt, data = lit%>%filter(year == 2005)))
 TukeyHSD(aov(litter~trt, data = lit%>%filter(year == 2006)))
@@ -397,17 +397,23 @@ litlit2<-litlit%>%
   filter(!is.na(litter))
 litlit2$trt <- factor(litlit2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
 
-
+library(MuMIn)
+library(lme4)
 ##### MM:RICHNESS #####
 #native 2005-2008
 rich_NF2005.2008<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year<2009))
 summary(rich_NF2005.2008)
+anova(rich_NF2005.2008)
 summary(glht(rich_NF2005.2008, linfct=mcp(trt="Tukey")))
+r.squaredGLMM(rich_NF2005.2008)
 
 #native 2009-2012
 rich_NF2009.2012<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="forb native"&year>2008))
 summary(rich_NF2009.2012)
+anova(rich_NF2009.2012)
 summary(glht(rich_NF2009.2012, linfct=mcp(trt="Tukey")))
+r.squaredGLMM(rich_NF2009.2012)
+
 
 #nonnative 2005-2008
 rich_IG2005.2008<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year<2009))
@@ -418,6 +424,7 @@ summary(glht(rich_IG2005.2008, linfct=mcp(trt="Tukey")))
 rich_IG2009.2012<-lme(richness~trt+year, random = ~1|transect2/quadrat, data = subset(richrich2, func=="grass non-native"&year>2008))
 summary(rich_IG2009.2012)
 summary(glht(rich_IG2009.2012, linfct=mcp(trt="Tukey")))
+
 
 
 ##### MM:COVER #####
@@ -518,6 +525,62 @@ ggarrange(lme1, lme2, lme3, lme4,  ncol = 2, nrow = 2,
           font.label = list(size = 10),
           hjust = c(-0.5, -0.35, -0.5, -0.35))
   
+#########################
+#repeated measures
+########################
+library(lsmeans)
+richrich2$year<- factor(richrich2$year, ordered=TRUE)
+levels(richrich2$year)
+
+#nonnative richness all years
+rich_IG<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2013))
+summary(rich_IG)
+rich_IG_aov<-anova(rich_IG)
+rich_IG_aov
+LS.IG1<-lsmeans(rich_IG, ~year*trt)
+LS.IG1.cont<-contrast(LS.IG1, "pairwise", by="year")
+LS.IG1.cont
+
+#native richness all years
+rich_NF<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2013))
+summary(rich_NF)
+rich_NF_aov<-anova(rich_NF)
+rich_NF_aov
+LS.NF1<-lsmeans(rich_NF, ~year*trt, weights="cells")
+LS.NF1.cont<-contrast(LS.NF1, "pairwise", by="year")
+LS.NF1.cont
+
+
+covcov2$year<- factor(covcov2$year, ordered=TRUE)
+levels(covcov2$year)
+
+#native cover all years
+cov_NF<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2013))
+summary(cov_NF)
+cov_NF_aov<-anova(cov_NF)
+cov_NF_aov
+LS.cNF1<-lsmeans(cov_NF, ~year*trt)
+LS.cNF1.cont<-contrast(LS.cNF1, "pairwise", by="year")
+LS.cNF1.cont
+
+#nonnative cover all years
+cov_IG<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2013))
+summary(cov_IG)
+cov_IG_aov<-anova(cov_IG)
+cov_IG_aov
+LS.cIG1<-lsmeans(cov_IG, ~year*trt)
+LS.cIG1.cont<-contrast(LS.cIG1, "pairwise", by="year")
+LS.cIG1.cont
+
+# litter all years from 2006-2012
+lit<-lm(litter~trt*year, na.action=na.omit, data = subset(litlit2,year>2006&year<2013))
+summary(lit)
+lit_aov<-anova(lit)
+lit_aov
+LS.lit<-lsmeans(lit, ~year*trt)
+LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
+LS.lit.cont
+
 
 
                                                      
