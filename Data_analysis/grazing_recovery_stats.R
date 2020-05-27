@@ -655,7 +655,7 @@ lit.m<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<
 summary(lit.m)
 lit_aov<-anova(lit.m)
 lit_aov
-LS.lit<-lsmeans(lit, ~year*trt)
+LS.lit<-lsmeans(lit.m, ~year*trt)
 LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
 LSlit<-summary(LS.lit.cont)
 
