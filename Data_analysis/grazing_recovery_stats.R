@@ -539,16 +539,52 @@ rich_IG_aov<-anova(rich_IG)
 rich_IG_aov
 LS.IG1<-lsmeans(rich_IG, ~year*trt)
 LS.IG1.cont<-contrast(LS.IG1, "pairwise", by="year")
-LS.IG1.cont
+LSig1<-summary(LS.IG1.cont)
+
+#nonnative richness 2005-2008
+rich_IG2<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
+summary(rich_IG2)
+rich_IG2_aov<-anova(rich_IG2)
+rich_IG2_aov
+LS.IG2<-lsmeans(rich_IG2, ~year*trt)
+LS.IG2.cont<-contrast(LS.IG2, "pairwise", by="year")
+LSig2<-summary(LS.IG2.cont)
+
+#nonnative richness 2009-2012
+rich_IG3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
+summary(rich_IG3)
+rich_IG3_aov<-anova(rich_IG3)
+rich_IG3_aov
+LS.IG3<-lsmeans(rich_IG3, ~year*trt)
+LS.IG3.cont<-contrast(LS.IG3, "pairwise", by="year")
+LSig3<-summary(LS.IG3.cont)
 
 #native richness all years
 rich_NF<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2013))
 summary(rich_NF)
 rich_NF_aov<-anova(rich_NF)
 rich_NF_aov
-LS.NF1<-lsmeans(rich_NF, ~year*trt, weights="cells")
+LS.NF1<-lsmeans(rich_NF, ~year*trt)
 LS.NF1.cont<-contrast(LS.NF1, "pairwise", by="year")
-LS.NF1.cont
+LSnf1<-summary(LS.NF1.cont)
+
+#native richness 2005-2008
+rich_NF2<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
+summary(rich_NF2)
+rich_NF2_aov<-anova(rich_NF2)
+rich_NF2_aov
+LS.NF2<-lsmeans(rich_NF2, ~year*trt)
+LS.NF2.cont<-contrast(LS.NF2, "pairwise", by="year")
+LSnf2<-summary(LS.NF2.cont)
+
+#native richness 2009-2012
+rich_NF3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
+summary(rich_NF3)
+rich_NF3_aov<-anova(rich_NF3)
+rich_NF3_aov
+LS.NF3<-lsmeans(rich_NF3, ~year*trt)
+LS.NF3.cont<-contrast(LS.NF3, "pairwise", by="year")
+LSnf3<-summary(LS.NF3.cont)
 
 
 covcov2$year<- factor(covcov2$year, ordered=TRUE)
@@ -561,7 +597,25 @@ cov_NF_aov<-anova(cov_NF)
 cov_NF_aov
 LS.cNF1<-lsmeans(cov_NF, ~year*trt)
 LS.cNF1.cont<-contrast(LS.cNF1, "pairwise", by="year")
-LS.cNF1.cont
+LSnfc1<-summary(LS.cNF1.cont)
+
+#native cover 2005-2008
+cov_NF2<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2009))
+summary(cov_NF2)
+cov_NF2_aov<-anova(cov_NF2)
+cov_NF2_aov
+LS.cNF2<-lsmeans(cov_NF2, ~year*trt)
+LS.cNF2.cont<-contrast(LS.cNF2, "pairwise", by="year")
+LSnfc2<-summary(LS.cNF2.cont)
+
+#native cover 2009-2012
+cov_NF3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
+summary(cov_NF3)
+cov_NF3_aov<-anova(cov_NF3)
+cov_NF3_aov
+LS.cNF3<-lsmeans(cov_NF3, ~year*trt)
+LS.cNF3.cont<-contrast(LS.cNF3, "pairwise", by="year")
+LSnfc3<-summary(LS.cNF3.cont)
 
 #nonnative cover all years
 cov_IG<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2013))
@@ -570,17 +624,58 @@ cov_IG_aov<-anova(cov_IG)
 cov_IG_aov
 LS.cIG1<-lsmeans(cov_IG, ~year*trt)
 LS.cIG1.cont<-contrast(LS.cIG1, "pairwise", by="year")
-LS.cIG1.cont
+LSigc1<-summary(LS.cIG1.cont)
+
+#nonnative cover 2005-2008
+cov_IG2<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2009))
+summary(cov_IG2)
+cov_IG2_aov<-anova(cov_IG2)
+cov_IG2_aov
+LS.cIG2<-lsmeans(cov_IG2, ~year*trt)
+LS.cIG2.cont<-contrast(LS.cIG2, "pairwise", by="year")
+LSigc2<-summary(LS.cIG2.cont)
+
+#nonnative cover 2009-2012
+cov_IG3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
+summary(cov_IG3)
+cov_IG3_aov<-anova(cov_IG3)
+cov_IG3_aov
+LS.cIG3<-lsmeans(cov_IG3, ~year*trt)
+LS.cIG3.cont<-contrast(LS.cIG3, "pairwise", by="year")
+LSigc3<-summary(LS.cIG3.cont)
+
+
+litlit2$year<- factor(litlit2$year, ordered=TRUE)
+levels(litlit2$year)
+litlit3<-litlit2 %>% group_by(transect2, quadrat,  year, trt) %>% summarize(lit=mean(litter))
+
 
 # litter all years from 2006-2012
-lit<-lm(litter~trt*year, na.action=na.omit, data = subset(litlit2,year>2006&year<2013))
-summary(lit)
-lit_aov<-anova(lit)
+lit.m<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<2013))
+summary(lit.m)
+lit_aov<-anova(lit.m)
 lit_aov
 LS.lit<-lsmeans(lit, ~year*trt)
 LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
-LS.lit.cont
+LSlit<-summary(LS.lit.cont)
 
+# litter  years  2006-2008
+lit2<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<2009))
+summary(lit2)
+lit_ao2<-anova(lit2)
+lit_ao2
+LS.lit2<-lsmeans(lit2, ~year*trt)
+LS.lit2.cont<-contrast(LS.lit2, "pairwise", by="year")
+LSlit2<-summary(LS.lit2.cont)
+
+# litter  years  2009-2012
+lit3<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
+summary(lit3)
+lit_ao3<-anova(lit3)
+lit_ao3
+LS.lit3<-lsmeans(lit3, ~year*trt)
+LS.lit3.cont<-contrast(LS.lit3, "pairwise", by="year")
+LSlit3<-summary(LS.lit3.cont)
 
 
                                                      
