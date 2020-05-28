@@ -243,7 +243,6 @@ f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2004:2008)), aes(yea
   annotate("text", x= 2006, y = 10.5, label = "**", size = 4) +
   annotate("text", x= 2007, y = 10.5, label = "**", size = 4) +
   annotate("text", x= 2008, y = 10.5, label = "**", size = 4) +
-  annotate("text", x= 2009, y = 10.5, label = "**", size = 4) +
   annotate("text", x= 2010, y = 10.5, label = "*", size = 4) +
   annotate("text", x= 2011, y = 10.5, label = "*", size = 4) +
   annotate("text", x= 2012, y = 10.5, label = "", size = 4)
@@ -291,14 +290,14 @@ f3b <- ggplot(subset(cov1,func == "forb native"&year%in%c(2004:2008)), aes((year
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   ggtitle("")+
-  annotate("text", x= 2005, y = 75, label = "**", size = 4) +
+  annotate("text", x= 2005, y = 75, label = "***", size = 4) +
   annotate("text", x= 2006, y = 75, label = "***", size = 4) +
   annotate("text", x= 2007, y = 75, label = "**", size = 4) +
   annotate("text", x= 2008, y = 75, label = "**", size = 4) +
   annotate("text", x= 2009, y = 75, label = "**", size = 4) +
   annotate("text", x= 2010, y = 75, label = "**", size = 4) +
   annotate("text", x= 2011, y = 75, label = "", size = 4) +
-  annotate("text", x= 2012, y = 75, label = "*", size = 4) +
+  annotate("text", x= 2012, y = 75, label = "**", size = 4) +
   annotate("text", x= 2004.5, y = 8, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 12, 
            label = "atop(cattle, reintroduced)", 
@@ -324,7 +323,7 @@ f4b <- ggplot(subset(cov1, func == "grass non-native"&year%in%c(2004:2008)), aes
   geom_segment(aes(x=2004.5, y=6, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
   geom_segment(aes(x=2008.5, y=6, xend=2008.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
   ggtitle("")+
-  annotate("text", x= 2005, y = 95, label = "**", size = 4) +
+  annotate("text", x= 2005, y = 95, label = "***", size = 4) +
   annotate("text", x= 2006, y = 95, label = "***", size = 4) +
   annotate("text", x= 2007, y = 95, label = "**", size = 4) +
   annotate("text", x= 2008, y = 95, label = "**", size = 4) +
@@ -345,13 +344,13 @@ f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
   scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
   ggtitle("")+
-  annotate("text", x= 2006, y = 40, label = "**", size = 4) +
-  annotate("text", x= 2007, y = 40, label = "***", size = 4) +
+  annotate("text", x= 2006, y = 40, label = "", size = 4) +
+  annotate("text", x= 2007, y = 40, label = "**", size = 4) +
   annotate("text", x= 2008, y = 40, label = "**", size = 4) +
-  annotate("text", x= 2009, y = 40, label = "***", size = 4) +
-  annotate("text", x= 2010, y = 40, label = "**", size = 4) +
-  annotate("text", x= 2011, y = 40, label = "***", size = 4) +
-  annotate("text", x= 2012, y = 40, label = "***", size = 4) +
+  annotate("text", x= 2009, y = 40, label = "**", size = 4) +
+  annotate("text", x= 2010, y = 40, label = "", size = 4) +
+  annotate("text", x= 2011, y = 40, label = "*", size = 4) +
+  annotate("text", x= 2012, y = 40, label = "*", size = 4) +
   annotate("text", x= 2004.5, y = 5, label = "fire", size = 3) +
   geom_segment(aes(x=2004.5, y=2.5, xend=2004.5, yend=.5), arrow=arrow(length = unit(0.03, "npc"))) + 
   ggtitle("")+

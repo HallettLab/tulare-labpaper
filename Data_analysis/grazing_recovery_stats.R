@@ -660,7 +660,7 @@ LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
 LSlit<-summary(LS.lit.cont)
 
 # litter  years  2006-2008
-lit2<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<2009))
+lit2<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2005&year<2009))
 summary(lit2)
 lit_ao2<-anova(lit2)
 lit_ao2
