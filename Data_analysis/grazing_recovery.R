@@ -231,7 +231,7 @@ f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2004:2008)), aes(yea
   geom_line(data=subset(rich1, func=="forb native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), labels = c("burned-grazed", "burned-ungrazed", "unburned-ungrazed")) +
   annotate("text", x= 2004.5, y = 1.5, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 2, 
            label = "atop(cattle, reintroduced)", 
