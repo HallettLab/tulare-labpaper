@@ -230,9 +230,10 @@ f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2004:2008)), aes(yea
   geom_point(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(color=as.factor(trt), fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(rich1, func=="forb native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Species Richness")+
-  scale_shape_manual(values = c(17, 25, 19)) +
+  theme(legend.title = element_blank())+
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100"), labels = c("burned-grazed", "burned-ungrazed", "unburned-ungrazed")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   annotate("text", x= 2004.5, y = 1.5, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 2, 
            label = "atop(cattle, reintroduced)", 
@@ -258,9 +259,9 @@ f2b <- ggplot(subset(rich1, func == "grass non-native"&year%in%c(2004:2008)), ae
   geom_line(data=subset(rich1, func=="grass non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
   labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   ggtitle("")+
   annotate("text", x= 2004.5, y = 1.3, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 1.4, 
@@ -287,9 +288,9 @@ f3b <- ggplot(subset(cov1,func == "forb native"&year%in%c(2004:2008)), aes((year
   geom_line(data=subset(cov1, func=="forb native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
   labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   ggtitle("")+
   annotate("text", x= 2005, y = 75, label = "***", size = 4) +
   annotate("text", x= 2006, y = 75, label = "***", size = 4) +
@@ -315,9 +316,9 @@ f4b <- ggplot(subset(cov1, func == "grass non-native"&year%in%c(2004:2008)), aes
   geom_point(data=subset(cov1, func=="grass non-native"&year%in%c(2008:2012)), aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(cov1, func=="grass non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   annotate("text", x= 2004.5, y = 9, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 15, 
            label = "atop(cattle, reintroduced)", 
@@ -343,9 +344,9 @@ f5b <- ggplot(subset(litter, year%in%c(2005:2008)), aes(year, mean_litter)) +
   geom_point(data=subset(litter, year%in%c(2008:2012)), aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(litter, year%in%c(2005:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Litter Cover (%)", fill = "Treatment") +
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   ggtitle("")+
   annotate("text", x= 2006, y = 40, label = "", size = 4) +
   annotate("text", x= 2007, y = 40, label = "**", size = 4) +
@@ -387,15 +388,16 @@ S2a <- ggplot(subset(rich1, func == "forb non-native"&year%in%c(2004:2008)), aes
   geom_point(data=subset(rich1, func=="forb non-native"&year%in%c(2008:2012)), aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(rich1, func=="forb non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
-  scale_shape_manual(values = c(17, 25, 19)) +
+  theme(legend.title = element_blank())+
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
-  annotate("text", x= 2004.5, y = .8, label = "fire", size = 3) +
-  annotate(geom = 'text', x= 2008.5, y = .8, 
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
+  annotate("text", x= 2004.5, y = .75, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = .73, 
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3)+
-  geom_segment(aes(x=2004.5, y=.75, xend=2004.5, yend=.65), arrow=arrow(length = unit(0.03, "npc"))) + 
-  geom_segment(aes(x=2008.5, y=.75, xend=2008.5, yend=.65), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2004.5, y=.7, xend=2004.5, yend=.6), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=.65, xend=2008.5, yend=.55), arrow=arrow(length = unit(0.03, "npc"))) + 
   ggtitle("")
 
 
@@ -409,16 +411,16 @@ S2b <- ggplot(subset(rich1, func == "grass native"&year%in%c(2004:2008)), aes(ye
   geom_line(data=subset(rich1, func=="grass native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
   labs(x = NULL, y = "Mean Species Richness", fill = "Treatment")+
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   ggtitle("")+
   annotate("text", x= 2004.5, y = 1, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 1, 
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3)+
   geom_segment(aes(x=2004.5, y=.9, xend=2004.5, yend=.8), arrow=arrow(length = unit(0.03, "npc"))) + 
-  geom_segment(aes(x=2008.5, y=.9, xend=2008.5, yend=.8), arrow=arrow(length = unit(0.03, "npc")))
+  geom_segment(aes(x=2008.5, y=.8, xend=2008.5, yend=.7), arrow=arrow(length = unit(0.03, "npc")))
 
 
 S2c <- ggplot(subset(cov1,func == "forb non-native"&year%in%c(2004:2008)), aes((year), meanrelcov*100))+
@@ -431,16 +433,16 @@ S2c <- ggplot(subset(cov1,func == "forb non-native"&year%in%c(2004:2008)), aes((
   geom_line(data=subset(cov1, func=="forb non-native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   geom_errorbar(aes(ymin=meanrelcov*100-se_relcov*100, ymax=meanrelcov*100+se_relcov*100, color=trt), width=.2)+
   labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
   ggtitle("")+
   annotate("text", x= 2004.5, y = 10, label = "fire", size = 3) +
   annotate(geom = 'text', x= 2008.5, y = 10, 
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3)+
   geom_segment(aes(x=2004.5, y=9, xend=2004.5, yend=8), arrow=arrow(length = unit(0.03, "npc"))) + 
-  geom_segment(aes(x=2008.5, y=9, xend=2008.5, yend=8), arrow=arrow(length = unit(0.03, "npc"))) +   ggtitle("")
+  geom_segment(aes(x=2008.5, y=8.5, xend=2008.5, yend=7.5), arrow=arrow(length = unit(0.03, "npc"))) +   ggtitle("")
 
 S2d <- ggplot(subset(cov1, func == "grass native"&year%in%c(2004:2008)), aes((year), meanrelcov*100))+
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
@@ -451,15 +453,15 @@ S2d <- ggplot(subset(cov1, func == "grass native"&year%in%c(2004:2008)), aes((ye
   geom_point(data=subset(cov1, func=="grass native"&year%in%c(2008:2012)), aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(cov1, func=="grass native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Relative Cover (%)", fill = "Treatment") +
-  scale_shape_manual(values = c(17, 25, 19)) +
+  scale_shape_manual(values = c(17, 25, 1)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"), guide = FALSE) +
-  scale_fill_manual(values = c("grey0", "grey85", "grey100")) +
-  annotate("text", x= 2004.5, y = 6.5, label = "fire", size = 3) +
-  annotate(geom = 'text', x= 2008.5, y = 6.5, 
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"), guide = FALSE) +
+  annotate("text", x= 2004.5, y = 6, label = "fire", size = 3) +
+  annotate(geom = 'text', x= 2008.5, y = 5.5, 
            label = "atop(cattle, reintroduced)", 
            parse = TRUE, size=3)+
-  geom_segment(aes(x=2004.5, y=6, xend=2004.5, yend=5), arrow=arrow(length = unit(0.03, "npc"))) + 
-  geom_segment(aes(x=2008.5, y=6, xend=2008.5, yend=5), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2004.5, y=5.5, xend=2004.5, yend=5), arrow=arrow(length = unit(0.03, "npc"))) + 
+  geom_segment(aes(x=2008.5, y=4.5, xend=2008.5, yend=4), arrow=arrow(length = unit(0.03, "npc"))) + 
   ggtitle("")
 
 
