@@ -111,48 +111,48 @@ mod_trt_isa_early = multipatt(cover.relrow.me, mod.trt.early$treatment, control=
 summary(mod_trt_isa_early)
 
 #create plot in ggplot 
-fig1b<-ggplot(subset(spscoresall.mod.e, year==2005), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig1b<-ggplot(subset(spscoresall.mod.e, year==2005), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(treatment)))+
   geom_point(cex=4.5)+
   ggtitle("b) 2005: 1 year post fire")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Year"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
 fig1b
 
-fig1c<-ggplot(subset(spscoresall.mod.e, year==2006), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig1c<-ggplot(subset(spscoresall.mod.e, year==2006), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(treatment)))+
   geom_point(cex=4.5)+
   ggtitle("c) 2006: 2 years post fire")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Year"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
 fig1c
 
-fig1d<-ggplot(subset(spscoresall.mod.e, year==2007), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig1d<-ggplot(subset(spscoresall.mod.e, year==2007), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(treatment)))+
   geom_point(cex=4.5)+
   ggtitle("d) 2007: 3 years post fire")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Year"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
 fig1d
 
-fig1e<-ggplot(subset(spscoresall.mod.e, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig1e<-ggplot(subset(spscoresall.mod.e, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(treatment)))+
   geom_point(cex=4.5)+
   ggtitle("e) 2008: 4 years post fire")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Year"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
@@ -161,11 +161,13 @@ fig1e<-ggplot(subset(spscoresall.mod.e, year==2008), aes(x=NMDS1, y=NMDS2, fill=
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
 fig1e
 
-fig1f<-ggplot(spscoresall.mod.e, aes(x=NMDS1, y=NMDS2, fill=mod.data.early$treatment))+
-  geom_point(cex=4.5, pch=21)+
+fig1f<-ggplot(spscoresall.mod.e, aes(x=NMDS1, y=NMDS2, fill=mod.data.early$treatment, shape=mod.data.early$treatment))+
+  geom_point(cex=4.5)+
   ggtitle("f) 2005 - 2008")+
   xlim(-1,1)+
   ylim(-1,1)+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment:"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   #theme(legend.position="none")+
@@ -277,12 +279,14 @@ spc.e$MDS2[spc.e$name == "Plantago.erecta"] <- 0.10
 spc.e$MDS1[spc.e$name == "Festuca.bromoides"] <- -0.9
 spc.e$MDS1[spc.e$name == "Trifolium.depauperatum"] <- -0.9
 
-vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
+vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2, ))+
   xlim(-1,1)+
   ggtitle("a) Change over time after fire from 2005 - 2008")+
   geom_path(arrow=arrow(), aes(col=mod_yr_burn$treatment))+
-  scale_color_manual(values=c("grey0", "grey60","grey85"))+
-  geom_point(cex=6, aes(fill=mod_yr_burn$treatment), pch=21)+
+  scale_color_manual(values=c("grey0", "grey60","grey85"))+ #color line to match treatments
+  geom_point(cex=6, aes(fill=mod_yr_burn$treatment, shape=mod_yr_burn$treatment))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85","grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
 
@@ -305,9 +309,8 @@ lay <- rbind(c(1,1,1,1),
              c(2,2,3,3),
              c(4,4,5,5),
              c(4,4,5,5),
-             c(4,4,5,5),
-             c(6,6,6,6))
-grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, mylegend, layout_matrix = lay) #put panel together
+             c(4,4,5,5))
+grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, layout_matrix = lay) #put panel together
 #save as 1200W x 1800L
 
 ################
@@ -371,83 +374,90 @@ mod_trt_isa_late = multipatt(cover.relrow.ml, mod.trt.late$treatment, control=ho
 summary(mod_trt_isa_late)
 
 #create plot in ggplot 
-fig1b<-ggplot(subset(spscoresall.mod.l, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2b<-ggplot(subset(spscoresall.mod.l, year==2008), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=treatment))+
   geom_point(cex=4.5)+
   ggtitle("b) 2008: grazing reintroduced")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
-fig1b
+fig2b
 
-fig1c<-ggplot(subset(spscoresall.mod.l, year==2009), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2c<-ggplot(subset(spscoresall.mod.l, year==2009), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=treatment))+
   geom_point(cex=4.5)+
   ggtitle("c) 2009: 1 year post-grazing")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="none")
-fig1c
+fig2c
 #fig1c+geom_text(subset(spscoresall.mod.e, year==2009), mapping=aes(x=NMDS1, y=NMDS2, label=mod.2009$transect), cex=4)
 
-fig1d<-ggplot(subset(spscoresall.mod.l, year==2010), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2d<-ggplot(subset(spscoresall.mod.l, year==2010), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=treatment))+
   geom_point(cex=4.5)+
   ggtitle("d) 2010: 2 years post-grazing")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
-fig1d
+fig2d
 
-fig1e<-ggplot(subset(spscoresall.mod.l, year==2011), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2e<-ggplot(subset(spscoresall.mod.l, year==2011), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=treatment))+
   geom_point(cex=4.5)+
   ggtitle("e) 2011: 3 years post-grazing")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position="bottom", legend.title=element_text(size=11), legend.text=element_text(size=10), axis.text=element_text(size=8), axis.title=element_text(size=11))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1e
+fig2e
 
-fig1f<-ggplot(subset(spscoresall.mod.l, year==2012), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=as.factor(year)))+
+fig2f<-ggplot(subset(spscoresall.mod.l, year==2012), aes(x=NMDS1, y=NMDS2, fill=treatment, shape=treatment))+
   geom_point(cex=4.5)+
   ggtitle("f) 2012: 4 years post-grazing")+
   xlim(-1,1)+
   ylim(-1,1)+
-  scale_shape_manual(values=c(21),guide = guide_legend(title = "Year"))+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position="bottom", legend.title=element_text(size=11), legend.text=element_text(size=10), axis.text=element_text(size=8), axis.title=element_text(size=11))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1f
+fig2f
 
-fig1g<-ggplot(spscoresall.mod.l, aes(x=NMDS1, y=NMDS2, fill=spscoresall.mod.l$treatment, shape=as.factor(mod.data.late$year)))+
-  geom_point(cex=4.5,pch = 21)+
+fig2g<-ggplot(spscoresall.mod.l, aes(x=NMDS1, y=NMDS2, fill=spscoresall.mod.l$treatment, shape=treatment))+
+  geom_point(cex=4.5)+
   ggtitle("g)")+
   xlim(-1,1)+
   ylim(-1,1)+
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
   scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment:"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   #theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))+
   theme(legend.position="left", legend.title=element_text(size=20), legend.text=element_text(size=17), axis.text=element_text(size=6), axis.title=element_text(size=11))+
   theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-fig1g
+fig2g
 
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
@@ -455,7 +465,7 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-mylegend<-g_legend(fig1g)
+mylegend2<-g_legend(fig2g)
 
 ##test for differences in treatment by year#######
 mod.2008<-subset(mod.data.late, year==2008) %>%
@@ -567,7 +577,7 @@ species.e<-as.data.frame(vec.mds$species)
 species.e$name<-row.names(species.e)
 spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.douglasii"| name=="Rigiopappus.leptoclodus"| name == "Deschampsia.danthoniodes" |name=="Stellaria.nitens"| name=="Cryptantha.flaccida"|name=="Sisyrinchium.bellum"| name=="Athysanus.pusilus"| name == "Chlorogalum.pomeridianum" |name=="Epilobium.sp."| name=="Muilla.maritima"| name=="Amsinckia.intermedia"|name=="Sanicula.bipinnatifida"|name=="Allium.serra"|name=="Lasthenia.californica"| name=="Calandrinia.ciliata" | name=="Trifolium.depauperatum" | name=="Gilia.tricolor" | name=="Bromus.madritensis" | name=="Festuca.myuros"| name =="Hordeum.murinum.ssp..leporinum" | name== "Festuca.microstachys"| name=="Calystegia.subacaulis" | name == "Festuca.perennis" | name == "Eriogonum.nudum")
 
-vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
+vec2<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   geom_path(arrow=arrow(), aes(col=mod_yr_graze$treatment))+
   scale_color_manual(values = c("grey0", "grey60", "grey85")) +
   geom_point(cex=6, pch = 21, aes(fill=mod_yr_graze$treatment))+
@@ -578,13 +588,13 @@ vec1<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   theme(plot.title = element_text(color="black", face="bold.italic"))
 #theme(legend.position=c(0.8,0.8), legend.title=element_text(size=14), legend.text=element_text(size=12), axis.text=element_text(size=16), axis.title=element_text(size=16))+
 #theme(legend.background = element_rect(colour = 'black', fill = 'white', linetype='solid'))
-vec1
+vec2
 
-vec1<-vec1+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=3)
-vec1
+vec2<-vec2+geom_text(data=spc.e, mapping=aes(x=MDS1, y=MDS2, label=name), cex=3)
+vec2
 
 #create layout for panel
-lay <- rbind(c(1,1,1,1),
+lay2 <- rbind(c(1,1,1,1),
              c(1,1,1,1),
              c(1,1,1,1),
              c(1,1,1,1),
@@ -594,8 +604,8 @@ lay <- rbind(c(1,1,1,1),
              c(4,4,5,5),
              c(4,4,5,5),
              c(4,4,5,5),
-             c(6,6,7,7),
-             c(6,6,7,7),
-             c(6,6,7,7))
-grid.arrange(vec1, fig1b, fig1c, fig1d, fig1e, fig1f, mylegend, layout_matrix = lay) #put panel together
-#save as 800w x 1200l
+             c(6,6,NA,NA),
+             c(6,6,NA,NA),
+             c(6,6,NA,NA))
+grid.arrange(vec2, fig2b, fig2c, fig2d, fig2e, fig2f, layout_matrix = lay2) #put panel together
+#save as 1200w x 2200l
