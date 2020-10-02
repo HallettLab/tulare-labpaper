@@ -224,10 +224,10 @@ ggarrange(f1, f2, f3, f4, f5, f6,  ncol = 2, nrow = 3,
 f1b <- ggplot(subset(rich1, func == "forb native"&year%in%c(2004:2008)), aes(year, mean_rich)) +
   geom_line(aes(color=as.factor(trt)), linetype="dashed") +
   geom_errorbar(aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
-  geom_point(aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
+  geom_point(aes(color=as.factor(trt), fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(color=as.factor(trt))) +
   geom_errorbar(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(ymin=mean_rich-se_rich, ymax=mean_rich+se_rich, color=as.factor(trt)), width=.2)+
-  geom_point(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(color=as.factor(trt),fill = as.factor(trt), shape = as.factor(trt))) +
+  geom_point(data=subset(rich1, func=="forb native"&year%in%c(2008:2012)), aes(color=as.factor(trt), fill = as.factor(trt), shape = as.factor(trt))) +
   geom_line(data=subset(rich1, func=="forb native"&year%in%c(2004:2008)&trt=="grazed burned"), aes(color=as.factor(trt))) +
   labs(x = NULL, y = "Mean Species Richness")+
   scale_shape_manual(values = c(17, 25, 19)) +
@@ -470,6 +470,29 @@ ggarrange(S2a, S2b, S2c, S2d,  ncol = 2, nrow = 2,
           font.label = list(size = 10),
           hjust = c(-0.5, -0.35, -0.5, -0.35))
 
+### Supplemental S3
+pler <- alldat %>%
+  filter(spcode == "PLA ERE") %>%
+  mutate(trt = paste(graze, burn)) %>%
+  group_by(year, trt) %>%
+  summarize(meancover = mean(cover), secover = calcSE(cover))
+ggplot(pler, aes(x = year, y = meancover, color = trt)) +
+  geom_line() +
+  geom_point(aes(fill = trt, shape = trt)) +
+  geom_errorbar(aes(ymin=meancover-secover, ymax=meancover+secover, color=as.factor(trt)), width =.2) +
+  labs(x = "Year", y = "Plantago Absolute Cover (%)") +
+  theme(legend.position = "none")+
+  scale_x_continuous(limits = c(2000, 2018), breaks = c(2000, 2005, 2010, 2015))+
+  scale_fill_manual(values = c("grey0", "grey85", "grey100"))+
+  scale_color_manual(values = c("grey0", "grey36", "grey65"), guide = FALSE)+
+  scale_shape_manual(values = c(17, 25, 1))+
+  annotate("text", x = 2004.5, y = 5, label = "fire", size = 3) +
+  geom_segment(aes(x=2004.5, y=2.5, xend=2004.5, yend=0.5), arrow=arrow(length=unit(0.03, "npc")), color = "grey0")+
+  annotate(geom = 'text', x = 2008.5, y = 30,
+           label = "atop(cattle, reintroduced)", 
+           parse = TRUE, 
+           size = 3)+
+  geom_segment(aes(x=2008.5, y = 25, xend = 2008.5, yend = 20), arrow=arrow(length = unit(0.03, "npc")), color = "grey0")
 
 ###
 #Litter, precip and native forb regression
