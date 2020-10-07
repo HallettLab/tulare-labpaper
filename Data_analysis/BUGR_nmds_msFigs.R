@@ -580,9 +580,11 @@ spc.e<- species.e %>% filter(name == "Agoseris.heterophylla"| name=="Microseris.
 vec2<-ggplot(spscoresall.vec, aes(x=NMDS1, y=NMDS2))+
   geom_path(arrow=arrow(), aes(col=mod_yr_graze$treatment))+
   scale_color_manual(values = c("grey0", "grey60", "grey85")) +
-  geom_point(cex=6, pch = 21, aes(fill=mod_yr_graze$treatment))+
+  geom_point(cex=6,  aes(fill=mod_yr_graze$treatment, shape=mod_yr_graze$treatment))+
   ggtitle("a) Change over time in response to grazing from 2008-2012")+
-  scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment"), #change legend title
+  scale_shape_manual(values=c(24, 25, 21),guide = guide_legend(title = "Treatment:"),
+                     labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+
+  scale_fill_manual(values=c("grey0", "grey85", "grey100"), guide = guide_legend(title = "Treatment:"), #change legend title
                      labels=c("Burned & Grazed", "Burned & Ungrazed", "Unburned & Ungrazed"))+ #change labels in the legend)+
   theme(legend.position="none")+
   theme(plot.title = element_text(color="black", face="bold.italic"))
@@ -608,4 +610,4 @@ lay2 <- rbind(c(1,1,1,1),
              c(6,6,NA,NA),
              c(6,6,NA,NA))
 grid.arrange(vec2, fig2b, fig2c, fig2d, fig2e, fig2f, layout_matrix = lay2) #put panel together
-#save as 1200w x 2200l
+#save as 1200w x 2340l
