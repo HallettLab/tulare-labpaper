@@ -518,9 +518,17 @@ rich.lit.fig <- ggplot(rich_litter, aes(litter, richness)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 anova(lm(richness ~litter, rich_litter))
 rich_precip<-left_join(rich_litter, preiplag)
-rich.prec.fig<-ggplot(subset(rich_precip), aes(prcp, richness)) +
-                        geom_jitter(aes(color=as.factor(trt))) +
-                        labs(x = "Prior year Precip (mm)", y = "Native Forb Richness", color = "Treatment") +
+rich_precip_summary <- rich_precip %>%
+  group_by(year, trt, type) %>%
+  summarize(meanrich = mean(richness), serich = calcSE(richness),
+            prcp = mean(prcp))
+
+rich.fig<-ggplot(rich_precip_summary, aes(year, meanrich)) +
+                        geom_bar(aes(x = year, y = prcp/180 ), stat = "identity", fill = "lightgrey")+ 
+                        geom_point(aes(color=as.factor(trt))) +
+                        geom_errorbar(aes(ymin=meanrich-serich, ymax=meanrich+serich, color=as.factor(trt)), width =.2) +
+                        labs(x = "Year", y = "Native Forb Richness", color = "Treatment") +
+                        scale_y_continuous(sec.axis = sec_axis(~.*60, name = "Prior yr ppt (mm)"))+
                         geom_smooth(colour = "black", method = lm, se = FALSE) + 
                         theme_classic() +
                         scale_color_manual(values= c("grey0", "grey36", "grey65"))
@@ -532,7 +540,7 @@ cov_rich <- cov %>%
 cov_litter <- left_join(cov_rich, envdat) %>%
   filter(year%in%c(2006:2012)) %>%
   filter(relcov != "NA")
-cov.lit.fig<-ggplot(cov_litter, aes(litter, relcov)) +
+cov.lit.fig<-ggplot(cov_litter, aes(litter, relcov*100)) +
   geom_jitter(aes(color = as.factor(trt))) +
   labs(x = "Litter Cover (%)", y = "Native Forb Cover (%)", color = "Treatment") +
   geom_smooth(method = "lm",  se = FALSE, color = "black") +
@@ -540,21 +548,34 @@ cov.lit.fig<-ggplot(cov_litter, aes(litter, relcov)) +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 anova(lm(relcov ~litter, cov_litter))
 cov_precip<-left_join(cov_litter, preiplag)
-cov.prec.fig<-ggplot(subset(cov_precip), aes(prcp, relcov)) +
-  geom_jitter(aes(color=as.factor(trt))) +
-  labs(x = "Prior year Precip (mm)", y = "Native Forb Cover (%)", color = "Treatment") +
+
+cov_precip_summary <- cov_precip %>%
+  group_by(year, trt) %>%
+  summarize(meanlitter = mean(litter), selitter = calcSE(litter),
+            meanrelcov = mean(relcov), serelcover = calcSE(relcov),
+            prcp = mean(prcp))
+
+cov.fig<-ggplot(cov_precip_summary, aes(year, meanrelcov*100)) +
+  geom_bar(aes(x = year, y = prcp/42 ), stat = "identity", fill = "lightgrey")+ 
+  geom_point(aes(color=as.factor(trt))) +
+  geom_errorbar(aes(ymin=(meanrelcov-serelcover)*100, ymax=(meanrelcov+serelcover)*100, color=as.factor(trt)), width =.2) +
+  labs(x = "Year", y = "Native Forb Cover (%)", color = "Treatment") +
+  scale_y_continuous(sec.axis = sec_axis(~.*14, name = "Prior yr ppt (mm)"))+
   geom_smooth(colour = "black", method = lm, se = FALSE) + 
   theme_classic() +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 
-litprec<-ggplot(subset(cov_precip), aes(prcp, log(litter))) +
-  geom_jitter(aes(color=as.factor(trt))) +
-  labs(x = "Prior year Precip (mm)", y = "Log(Litter % Cover)", color = "Treatment") +
+litprec<-ggplot(cov_precip_summary, aes(year, meanlitter)) +
+  geom_bar(aes(x = year, y = prcp/60 ), stat = "identity", fill = "lightgrey")+ 
+  geom_point(aes(year, meanlitter, color=as.factor(trt))) +
+  geom_errorbar(aes(ymin=meanlitter-selitter, ymax=meanlitter+selitter, color=as.factor(trt)), width =.2) +
+  labs(x = "Year", y = "Litter Cover (%)", color = "Treatment") +
+  scale_y_continuous(sec.axis = sec_axis(~.*20, name = "Prior yr ppt (mm)"))+
   geom_smooth(colour = "black", method = lm, se = FALSE) + 
   theme_classic() +
   scale_color_manual(values= c("grey0", "grey36", "grey65"))
 
-ggarrange(rich.lit.fig, cov.lit.fig, rich.prec.fig, cov.prec.fig, litprec, ncol=2, nrow=3, 
+ggarrange(rich.lit.fig, cov.lit.fig, rich.fig, cov.fig, litprec, ncol=2, nrow=3, 
   common.legend = TRUE, legend = "bottom", 
   font.label = list(size = 10),
   hjust = c(-0.5, -0.35, -0.5, -0.35, -0.9, -0.5))
