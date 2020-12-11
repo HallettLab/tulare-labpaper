@@ -3,6 +3,8 @@ library(readr)
 library(sjstats) #standardized effect size cohen's f
 library(nlme) #linear mixed models
 library(multcomp) #tukey
+library(MuMIn)
+
 
 #load updated master data, "alldat", in grazing_recovery.R
 
@@ -533,117 +535,189 @@ richrich2$year<- factor(richrich2$year, ordered=TRUE)
 levels(richrich2$year)
 
 #nonnative richness all years
-rich_IG<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2013))
-summary(rich_IG)
-rich_IG_aov<-anova(rich_IG)
-rich_IG_aov
-LS.IG1<-lsmeans(rich_IG, ~year*trt)
-LS.IG1.cont<-contrast(LS.IG1, "pairwise", by="year")
-LSig1<-summary(LS.IG1.cont)
+#rich_IG<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2013))
+#summary(rich_IG)
+#rich_IG_aov<-anova(rich_IG)
+#rich_IG_aov
+#LS.IG1<-lsmeans(rich_IG, ~year*trt+transect)
+#LS.IG1.cont<-contrast(LS.IG1, "pairwise", by="year")
+#LSig1<-summary(LS.IG1.cont)
+
+#nonnative richness all years (transect as fixed)
+#rich_IG_fixed<-lm(richness~trt*year+transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2013))
+#summary(rich_IG_fixed)
+#AIC(rich_IG_fixed)
+
+#nonnative richness all years (transect as random)
+#rich_IG_mixed<-lme(richness~trt*year, random = ~1|trt/transect,data = subset(richrich2, func=="grass non-native"&year>2004&year<2013))
+#AIC(rich_IG_mixed)
+#r.squaredGLMM(rich_IG_mixed)
 
 #nonnative richness 2005-2008
 rich_IG2<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
 summary(rich_IG2)
+AIC(rich_IG2)
 rich_IG2_aov<-anova(rich_IG2)
 rich_IG2_aov
 LS.IG2<-lsmeans(rich_IG2, ~year*trt)
 LS.IG2.cont<-contrast(LS.IG2, "pairwise", by="year")
 LSig2<-summary(LS.IG2.cont)
 
+#nonnative richness 2005-2008 (transect as fixed)
+rich_IG2_fixed<-lm(richness~trt*year+transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
+summary(rich_IG2_fixed)
+AIC(rich_IG2_fixed)
+rich_IG2_fixed_aov<-anova(rich_IG2_fixed)
+rich_IG2_fixed_aov
+
 #nonnative richness 2009-2012
 rich_IG3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
 summary(rich_IG3)
+AIC(rich_IG3)
 rich_IG3_aov<-anova(rich_IG3)
 rich_IG3_aov
 LS.IG3<-lsmeans(rich_IG3, ~year*trt)
 LS.IG3.cont<-contrast(LS.IG3, "pairwise", by="year")
 LSig3<-summary(LS.IG3.cont)
 
+#nonnative richness 2009-2012 (transect as fixed)
+rich_IG3_fixed<-lm(richness~trt*year+transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
+summary(rich_IG3_fixed)
+AIC(rich_IG3_fixed)
+rich_IG3_fixed_aov<-anova(rich_IG3_fixed)
+rich_IG3_fixed_aov
+
 #native richness all years
-rich_NF<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2013))
-summary(rich_NF)
-rich_NF_aov<-anova(rich_NF)
-rich_NF_aov
-LS.NF1<-lsmeans(rich_NF, ~year*trt)
-LS.NF1.cont<-contrast(LS.NF1, "pairwise", by="year")
-LSnf1<-summary(LS.NF1.cont)
+#rich_NF<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2013))
+#summary(rich_NF)
+#rich_NF_aov<-anova(rich_NF)
+#rich_NF_aov
+#LS.NF1<-lsmeans(rich_NF, ~year*trt)
+#LS.NF1.cont<-contrast(LS.NF1, "pairwise", by="year")
+#LSnf1<-summary(LS.NF1.cont)
 
 #native richness 2005-2008
 rich_NF2<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
 summary(rich_NF2)
+AIC(rich_NF2)
 rich_NF2_aov<-anova(rich_NF2)
 rich_NF2_aov
 LS.NF2<-lsmeans(rich_NF2, ~year*trt)
 LS.NF2.cont<-contrast(LS.NF2, "pairwise", by="year")
 LSnf2<-summary(LS.NF2.cont)
 
+#native richness 2005-2008 (transect as fixed)
+rich_NF2_fixed<-lm(richness~trt*year+transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
+summary(rich_NF2_fixed)
+AIC(rich_NF2_fixed)
+rich_NF2_fixed_aov<-anova(rich_NF2_fixed)
+rich_NF2_fixed_aov
+
 #native richness 2009-2012
 rich_NF3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
 summary(rich_NF3)
+AIC(rich_NF3)
 rich_NF3_aov<-anova(rich_NF3)
 rich_NF3_aov
 LS.NF3<-lsmeans(rich_NF3, ~year*trt)
 LS.NF3.cont<-contrast(LS.NF3, "pairwise", by="year")
 LSnf3<-summary(LS.NF3.cont)
 
+#native richness 2009-2012 (transect as fixed)
+rich_NF3_fixed<-lm(richness~trt*year+transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
+summary(rich_NF3_fixed)
+AIC(rich_NF3_fixed)
+rich_NF3_fixed_aov <- anova(rich_NF3_fixed)
+rich_NF3_fixed_aov
 
 covcov2$year<- factor(covcov2$year, ordered=TRUE)
 levels(covcov2$year)
 
 #native cover all years
-cov_NF<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2013))
-summary(cov_NF)
-cov_NF_aov<-anova(cov_NF)
-cov_NF_aov
-LS.cNF1<-lsmeans(cov_NF, ~year*trt)
-LS.cNF1.cont<-contrast(LS.cNF1, "pairwise", by="year")
-LSnfc1<-summary(LS.cNF1.cont)
+#cov_NF<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2013))
+#summary(cov_NF)
+#cov_NF_aov<-anova(cov_NF)
+#cov_NF_aov
+#LS.cNF1<-lsmeans(cov_NF, ~year*trt)
+#LS.cNF1.cont<-contrast(LS.cNF1, "pairwise", by="year")
+#LSnfc1<-summary(LS.cNF1.cont)
 
 #native cover 2005-2008
 cov_NF2<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2009))
 summary(cov_NF2)
+AIC(cov_NF2)
 cov_NF2_aov<-anova(cov_NF2)
 cov_NF2_aov
 LS.cNF2<-lsmeans(cov_NF2, ~year*trt)
 LS.cNF2.cont<-contrast(LS.cNF2, "pairwise", by="year")
 LSnfc2<-summary(LS.cNF2.cont)
 
+#native cover 2005-2008 (transect as fixed)
+cov_NF2_fixed<-lm(relcov~trt*year+transect, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2009))
+summary(cov_NF2_fixed)
+AIC(cov_NF2_fixed)
+cov_NF2_fixed_aov<-anova(cov_NF2_fixed)
+cov_NF2_fixed_aov
+
 #native cover 2009-2012
 cov_NF3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
 summary(cov_NF3)
+AIC(cov_NF3)
 cov_NF3_aov<-anova(cov_NF3)
 cov_NF3_aov
 LS.cNF3<-lsmeans(cov_NF3, ~year*trt)
 LS.cNF3.cont<-contrast(LS.cNF3, "pairwise", by="year")
 LSnfc3<-summary(LS.cNF3.cont)
 
+#native cover 2009-2012 (transect as fixed)
+cov_NF3_fixed<-lm(relcov~trt*year+transect, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
+summary(cov_NF3_fixed)
+AIC(cov_NF3_fixed)
+cov_NF3_fixed_aov<-anova(cov_NF3_fixed)
+cov_NF3_fixed_aov
+
 #nonnative cover all years
-cov_IG<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2013))
-summary(cov_IG)
-cov_IG_aov<-anova(cov_IG)
-cov_IG_aov
-LS.cIG1<-lsmeans(cov_IG, ~year*trt)
-LS.cIG1.cont<-contrast(LS.cIG1, "pairwise", by="year")
-LSigc1<-summary(LS.cIG1.cont)
+#cov_IG<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2013))
+#summary(cov_IG)
+#cov_IG_aov<-anova(cov_IG)
+#cov_IG_aov
+#LS.cIG1<-lsmeans(cov_IG, ~year*trt)
+#LS.cIG1.cont<-contrast(LS.cIG1, "pairwise", by="year")
+#LSigc1<-summary(LS.cIG1.cont)
 
 #nonnative cover 2005-2008
 cov_IG2<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2009))
 summary(cov_IG2)
+AIC(cov_IG2)
 cov_IG2_aov<-anova(cov_IG2)
 cov_IG2_aov
 LS.cIG2<-lsmeans(cov_IG2, ~year*trt)
 LS.cIG2.cont<-contrast(LS.cIG2, "pairwise", by="year")
 LSigc2<-summary(LS.cIG2.cont)
 
+#nonnative cover 2005-2008 (transect as fixed)
+cov_IG2_fixed<-lm(relcov~trt*year+transect, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2009))
+summary(cov_IG2_fixed)
+AIC(cov_IG2_fixed)
+cov_IG2_fixed_aov<-anova(cov_IG2_fixed)
+cov_IG2_fixed_aov
+
 #nonnative cover 2009-2012
 cov_IG3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
 summary(cov_IG3)
+AIC(cov_IG3)
 cov_IG3_aov<-anova(cov_IG3)
 cov_IG3_aov
 LS.cIG3<-lsmeans(cov_IG3, ~year*trt)
 LS.cIG3.cont<-contrast(LS.cIG3, "pairwise", by="year")
 LSigc3<-summary(LS.cIG3.cont)
 
+#nonnative cover 2009-2012
+cov_IG3_fixed<-lm(relcov~trt*year+transect, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
+summary(cov_IG3_fixed)
+AIC(cov_IG3_fixed)
+cov_IG3_fixed_aov<-anova(cov_IG3_fixed)
+cov_IG3_fixed_aov
 
 litlit2$year<- factor(litlit2$year, ordered=TRUE)
 levels(litlit2$year)
@@ -651,31 +725,47 @@ litlit3<-litlit2 %>% group_by(transect2, quadrat,  year, trt) %>% summarize(lit=
 
 
 # litter all years from 2006-2012
-lit.m<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<2013))
-summary(lit.m)
-lit_aov<-anova(lit.m)
-lit_aov
-LS.lit<-lsmeans(lit.m, ~year*trt)
-LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
-LSlit<-summary(LS.lit.cont)
+#lit.m<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2006&year<2013))
+#summary(lit.m)
+#lit_aov<-anova(lit.m)
+#lit_aov
+#LS.lit<-lsmeans(lit.m, ~year*trt)
+#LS.lit.cont<-contrast(LS.lit, "pairwise", by="year")
+#LSlit<-summary(LS.lit.cont)
 
 # litter  years  2006-2008
 lit2<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2005&year<2009))
 summary(lit2)
+AIC(lit2)
 lit_ao2<-anova(lit2)
 lit_ao2
 LS.lit2<-lsmeans(lit2, ~year*trt)
 LS.lit2.cont<-contrast(LS.lit2, "pairwise", by="year")
 LSlit2<-summary(LS.lit2.cont)
 
+# litter years 2006-2008 (transect as fixed)
+lit2_fixed<-lm(lit~trt*year+transect2, na.action=na.omit, data = subset(litlit3,year>2005&year<2009))
+summary(lit2_fixed)
+AIC(lit2_fixed)
+lit_fixed_ao2<-anova(lit2_fixed)
+lit_fixed_ao2
+
 # litter  years  2009-2012
 lit3<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
 summary(lit3)
+AIC(lit3)
 lit_ao3<-anova(lit3)
 lit_ao3
 LS.lit3<-lsmeans(lit3, ~year*trt)
 LS.lit3.cont<-contrast(LS.lit3, "pairwise", by="year")
 LSlit3<-summary(LS.lit3.cont)
+
+# litter years 2009-2012 (transect as fixed)
+lit3_fixed<-lm(lit~trt*year+transect2, na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
+summary(lit3_fixed)
+AIC(lit3_fixed)
+lit_ao3_fixed<-anova(lit3_fixed)
+lit_ao3_fixed
 
 
                                                      
