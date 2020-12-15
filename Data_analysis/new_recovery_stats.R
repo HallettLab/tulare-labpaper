@@ -6,6 +6,7 @@ library(tidyverse)
 library(nlme) #linear mixed models
 library(MuMIn)
 library(readr)
+library(emmeans)
 
 #SET UP DATA:
 
@@ -43,6 +44,7 @@ richrich2<-richrich%>%
 richrich2$trt <- factor(richrich2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
 #unique quadrat name
 richrich2$quadUnique <- paste(richrich2$transect, richrich2$quadrat, sep = "_")
+richrich2$year<- factor(richrich2$year, ordered=TRUE)
 
 #######
 #cover#
@@ -69,7 +71,7 @@ covcov2<-covcov%>%
 covcov2$trt <- factor(covcov2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
 #unique quadrat name
 covcov2$quadUnique <- paste(covcov2$transect, covcov2$quadrat, sep = "_")
-
+covcov2$year<- factor(covcov2$year, ordered=TRUE)
 ########
 #litter#
 ########
@@ -125,20 +127,26 @@ rich_IG2_fixed_aov<-anova(rich_IG2_fixed)
 rich_IG2_fixed_aov #treatment significant, transect significant
 emmeans(rich_IG2_fixed,  ~ transect) #THM2 stands out (low nonnative richness)
 
-#nonnative richness 2005-2008 (transect as random)
-rich_IG2_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
+#nonnative richness 2005-2008 (quadrat as random)
+rich_IG2_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
 summary(rich_IG2_random)
 AIC(rich_IG2_random)
 rich_IG2_random_aov<-anova(rich_IG2_random)
 rich_IG2_random_aov #now treament is not significant
 r.squaredGLMM(rich_IG2_random) #adding transect explains an additional ~38% of the variation
+means<-emmeans(rich_IG2_random, ~trt*year)
+pairs(means)
 
-#nonnative richness 2005-2008 (quadrat as random)
-rich_IG2_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
+
+#nonnative richness 2005-2008 (random nested)
+rich_IG2_random<-lme(richness~trt*year, random=~1|transect/quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
 AIC(rich_IG2_random)
 rich_IG2_random_aov<-anova(rich_IG2_random)
 rich_IG2_random_aov # treatment not significant now
 r.squaredGLMM(rich_IG2_random) #similar to transect as a random effect, quad as random explains an additional ~40% of the variation
+means<-emmeans(rich_IG2_random, ~trt*year)
+pairs(means)
+
 
 ##############################
 #nonnative richness 2009-2012#
@@ -157,19 +165,24 @@ rich_IG3_fixed_aov<-anova(rich_IG3_fixed)
 rich_IG3_fixed_aov #treatment, year, treatment*year, and transect are significant
 emmeans(rich_IG3_fixed, ~transect) #again, THM2 stands out as low nonnative richness
 
-#nonnative richness 2009-2012 (transect as random)
-rich_IG3_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
-AIC(rich_IG3_random)
-rich_IG3_random_aov<-anova(rich_IG3_random)
-rich_IG3_random_aov #year and interaction of trt*year are significant
-r.squaredGLMM(rich_IG3_random) #additional 27% of variation explained by transect 
-
 #nonnative richness 2009-2012 (quadrat as random)
 rich_IG3_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
 AIC(rich_IG3_random)
 rich_IG3_random_aov<-anova(rich_IG3_random)
 rich_IG3_random_aov #year and interaction of trt*year are significant
-r.squaredGLMM(rich_IG3_random) #additional 49% of variation explained by quadrat
+r.squaredGLMM(rich_IG3_random) #additional 27% of variation explained by transect 
+means<-emmeans(rich_IG3_random, ~trt*year)
+pairs(means)
+
+#nonnative richness 2009-2012 (nested random)
+rich_IG3_random<-lme(richness~trt*year, random=~1|transect/quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
+AIC(rich_IG3_random)
+rich_IG3_random_aov<-anova(rich_IG3_random)
+rich_IG3_random_aov #year and interaction of trt*year are significant
+r.squaredGLMM(rich_IG3_random) #additional 49% of variation explained by quadratmeans<-emmeans(rich_IG3_random, ~trt*year)
+means<-emmeans(rich_IG3_random, ~trt*year)
+pairs(means)
+
 
 ###########################
 #native richness 2005-2008#
@@ -186,21 +199,26 @@ summary(rich_NF2_fixed)
 AIC(rich_NF2_fixed)
 rich_NF2_fixed_aov<-anova(rich_NF2_fixed)
 rich_NF2_fixed_aov #all terms are significant
-emmeans(rich_NF2_fixed, ~transect) #transect THM2 stands out as very high native richness
-
-#native richness 2005-2008 (transect as random)
-rich_NF2_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
-AIC(rich_NF2_random)
-rich_NF2_random_aov<-anova(rich_NF2_random)
-rich_NF2_random_aov #year and interaction of trt*year are significant
-r.squaredGLMM(rich_NF2_random) #explains an additional ~30% of the variation
+test<-emmeans(rich_NF2_fixed, ~trt*year) #transect THM2 stands out as very high native richness
+pairs(test)
 
 #native richness 2005-2008 (quadrat as random)
 rich_NF2_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
 AIC(rich_NF2_random)
 rich_NF2_random_aov<-anova(rich_NF2_random)
+rich_NF2_random_aov #year and interaction of trt*year are significant
+r.squaredGLMM(rich_NF2_random) #explains an additional ~30% of the variation
+means<-emmeans(rich_NF2_random, ~trt*year)
+pairs(means)
+
+#native richness 2005-2008 (random nested)
+rich_NF2_random<-lme(richness~trt*year, random=~1|transect/quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
+AIC(rich_NF2_random)
+rich_NF2_random_aov<-anova(rich_NF2_random)
 rich_NF2_random_aov
 r.squaredGLMM(rich_NF2_random)
+test<-emmeans(rich_NF2_random, ~trt*year) #transect THM2 stands out as very high native richness
+pairs(test)
 
 ###########################
 #native richness 2009-2012#
@@ -220,19 +238,23 @@ rich_NF3_fixed_aov #trt, year, transect are significant
 emmeans(rich_NF3_fixed, ~transect) #THM2 stands out
 
 
-#native richness 2009-2012 (transect as random)
-rich_NF3_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
-AIC(rich_NF3_random)
-rich_NF3_random_aov<-anova(rich_NF3_random)
-rich_NF3_random_aov #year is significant
-r.squaredGLMM(rich_NF3_random)
-
 #native richness 2009-2012 (quadrat as random)
 rich_NF3_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
 AIC(rich_NF3_random)
 rich_NF3_random_aov<-anova(rich_NF3_random)
+rich_NF3_random_aov #year is significant
+r.squaredGLMM(rich_NF3_random)
+test<-emmeans(rich_NF3_random, ~trt*year) 
+pairs(test)
+
+#native richness 2009-2012 (full nested)
+rich_NF3_random<-lme(richness~trt*year, random=~1|transect/quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
+AIC(rich_NF3_random)
+rich_NF3_random_aov<-anova(rich_NF3_random)
 rich_NF3_random_aov 
 r.squaredGLMM(rich_NF3_random)
+test<-emmeans(rich_NF3_random, ~trt*year) 
+pairs(test)
 
 ########################
 #native cover 2005-2008#
@@ -264,7 +286,10 @@ cov_NF2_random_aov<-anova(cov_NF2_random)
 AIC(cov_NF2_random)
 cov_NF2_random_aov #all terms significant
 r.squaredGLMM(cov_NF2_random) #additional 30% of variation explained by quad
+test<-emmeans(cov_NF2_random, ~trt*year) 
+pairs(test)
 
+#stopped doing the full nested because nothing was ever significant. it changed richness results too much. 
 ########################
 #native cover 2009-2012#
 ########################
@@ -295,6 +320,8 @@ cov_NF3_random_aov<-anova(cov_NF3_random)
 AIC(cov_NF3_random)
 cov_NF3_random_aov #trt, trt*year
 r.squaredGLMM(cov_NF3_random) #45% improvement
+test<-emmeans(cov_NF3_random, ~trt*year) 
+pairs(test)
 
 ###########################
 #nonnative cover 2005-2008#
@@ -326,6 +353,8 @@ cov_IG2_random_aov<-anova(cov_IG2_random)
 AIC(cov_IG2_random)
 cov_IG2_random_aov #all terms significant
 r.squaredGLMM(cov_IG2_random)#~25% improvement
+test<-emmeans(cov_IG2_random, ~trt*year) 
+pairs(test)
 
 ###########################
 #nonnative cover 2009-2012#
@@ -357,6 +386,8 @@ cov_IG3_random_aov<-anova(cov_IG3_random)
 AIC(cov_IG3_random)
 cov_IG3_random_aov #trt, trt*year
 r.squaredGLMM(cov_IG3_random)
+test<-emmeans(cov_IG3_random, ~trt*year) 
+pairs(test)
 
 ###########################
 # litter  years  2006-2008#
@@ -387,6 +418,8 @@ AIC(lit2_random)
 r.squaredGLMM(lit2_random)
 lit2_random_ao2<-anova(lit2_random)
 lit2_random_ao2 #all terms
+test<-emmeans(lit2_random, ~trt*year) 
+pairs(test)
 
 ###########################
 # litter  years  2009-2012#
@@ -417,3 +450,6 @@ AIC(lit3_random)
 r.squaredGLMM(lit3_random)
 lit3_random_aov<<-anova(lit3_random)
 lit3_random_aov
+test<-emmeans(lit3_random, ~trt*year) 
+pairs(test)
+
