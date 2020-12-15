@@ -714,6 +714,13 @@ AIC(cov_NF3_fixed)
 cov_NF3_fixed_aov<-anova(cov_NF3_fixed)
 cov_NF3_fixed_aov
 
+#native cover 2009-2012 (transect as random)
+cov_NF3_random<-lme(relcov~trt*year, random=~1|transect, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
+cov_NF3_random_aov<-anova(cov_NF3_random)
+AIC(cov_NF3_random)
+cov_NF3_random_aov
+r.squaredGLMM(cov_NF3_random)
+
 #nonnative cover all years
 #cov_IG<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2013))
 #summary(cov_IG)
@@ -740,6 +747,13 @@ AIC(cov_IG2_fixed)
 cov_IG2_fixed_aov<-anova(cov_IG2_fixed)
 cov_IG2_fixed_aov
 
+#native cover 2005-2008 (transect as random)
+cov_IG2_random<-lme(relcov~trt*year, random=~1|transect, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2009))
+cov_IG2_random_aov<-anova(cov_IG2_random)
+AIC(cov_IG2_random)
+cov_IG2_random_aov
+r.squaredGLMM(cov_IG2_random)
+
 #nonnative cover 2009-2012
 cov_IG3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
 summary(cov_IG3)
@@ -756,6 +770,13 @@ summary(cov_IG3_fixed)
 AIC(cov_IG3_fixed)
 cov_IG3_fixed_aov<-anova(cov_IG3_fixed)
 cov_IG3_fixed_aov
+
+#native cover 2009-2012 (transect as random)
+cov_IG3_random<-lme(relcov~trt*year, random=~1|transect, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
+cov_IG3_random_aov<-anova(cov_IG3_random)
+AIC(cov_IG3_random)
+cov_IG3_random_aov
+r.squaredGLMM(cov_IG3_random)
 
 litlit2$year<- factor(litlit2$year, ordered=TRUE)
 levels(litlit2$year)
@@ -788,6 +809,13 @@ AIC(lit2_fixed)
 lit_fixed_ao2<-anova(lit2_fixed)
 lit_fixed_ao2
 
+# litter years 2006-2008 (transect as random)
+lit2_random<-lme(lit~trt*year, random=(~1|transect2), na.action=na.omit, data = subset(litlit3,year>2005&year<2009))
+AIC(lit2_random)
+r.squaredGLMM(lit2_random)
+
+
+
 # litter  years  2009-2012
 lit3<-lm(lit~trt*year, na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
 summary(lit3)
@@ -805,5 +833,9 @@ AIC(lit3_fixed)
 lit_ao3_fixed<-anova(lit3_fixed)
 lit_ao3_fixed
 
+# litter years 2009-2012 (transect as random)
+lit3_random<-lme(lit~trt*year, random=(~1|transect2), na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
+AIC(lit3_random)
+r.squaredGLMM(lit3_random)
 
                                                      
