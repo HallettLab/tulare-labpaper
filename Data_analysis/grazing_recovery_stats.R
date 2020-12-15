@@ -381,6 +381,7 @@ richrich2<-richrich%>%
   mutate(trt=as.factor(trt))%>%
   filter(!is.na(richness))
 richrich2$trt <- factor(richrich2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
+richrich2$quadUnique <- paste(richrich2$transect, richrich2$quadrat, sep = "_")
 #load "cov" from grazing_recovery.R
 covcov<-cov%>%
   separate(quadratNew, into=c("transect2", "quadrat"), sep="-") 
@@ -570,6 +571,15 @@ AIC(rich_IG2_fixed)
 rich_IG2_fixed_aov<-anova(rich_IG2_fixed)
 rich_IG2_fixed_aov
 
+#nonnative richness 2005-2008 (transect as random)
+rich_IG2_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2004&year<2009))
+summary(rich_IG2_random)
+AIC(rich_IG2_random)
+rich_IG2_random_aov<-anova(rich_IG2_random)
+rich_IG2_random_aov
+r.squaredGLMM(rich_IG2_random)
+
+
 #nonnative richness 2009-2012
 rich_IG3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
 summary(rich_IG3)
@@ -586,6 +596,13 @@ summary(rich_IG3_fixed)
 AIC(rich_IG3_fixed)
 rich_IG3_fixed_aov<-anova(rich_IG3_fixed)
 rich_IG3_fixed_aov
+
+#nonnative richness 2009-2012 (transect as random)
+rich_IG3_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
+AIC(rich_IG3_random)
+rich_IG3_random_aov<-anova(rich_IG3_random)
+rich_IG3_random_aov
+r.squaredGLMM(rich_IG3_random)
 
 #native richness all years
 #rich_NF<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2013))
@@ -613,6 +630,13 @@ AIC(rich_NF2_fixed)
 rich_NF2_fixed_aov<-anova(rich_NF2_fixed)
 rich_NF2_fixed_aov
 
+#native richness 2005-2008 (transect as random)
+rich_NF2_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
+AIC(rich_NF2_random)
+rich_NF2_random_aov<-anova(rich_NF2_random)
+rich_NF2_random_aov
+r.squaredGLMM(rich_NF2_random)
+
 #native richness 2009-2012
 rich_NF3<-lm(richness~trt*year, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
 summary(rich_NF3)
@@ -629,6 +653,13 @@ summary(rich_NF3_fixed)
 AIC(rich_NF3_fixed)
 rich_NF3_fixed_aov <- anova(rich_NF3_fixed)
 rich_NF3_fixed_aov
+
+#native richness 2009-2012 (transect as random)
+rich_NF3_random<-lme(richness~trt*year, random=~1|transect, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
+AIC(rich_NF3_random)
+rich_NF3_random_aov<-anova(rich_NF3_random)
+rich_NF3_random_aov
+r.squaredGLMM(rich_NF3_random)
 
 covcov2$year<- factor(covcov2$year, ordered=TRUE)
 levels(covcov2$year)
@@ -658,6 +689,13 @@ summary(cov_NF2_fixed)
 AIC(cov_NF2_fixed)
 cov_NF2_fixed_aov<-anova(cov_NF2_fixed)
 cov_NF2_fixed_aov
+
+#native cover 2005-2008 (transect as random)
+cov_NF2_random<-lme(relcov~trt*year, random=~1|transect, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2009))
+cov_NF2_random_aov<-anova(cov_NF2_random)
+AIC(cov_NF2_random)
+cov_NF2_random_aov
+r.squaredGLMM(cov_NF2_random)
 
 #native cover 2009-2012
 cov_NF3<-lm(relcov~trt*year, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
