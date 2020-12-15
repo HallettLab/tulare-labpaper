@@ -36,7 +36,10 @@ litlit2<-litlit%>%
   mutate(trt=as.factor(trt))%>%
   filter(!is.na(litter))
 litlit2$trt <- factor(litlit2$trt, levels = c("ungrazed burned", "ungrazed unburned", "grazed burned"))
-litlit2$quadUnique <- paste(litlit2$transect, litlit2$quadrat, sep = "_")
+litlit2$year<- factor(litlit2$year, ordered=TRUE)
+levels(litlit2$year)
+litlit3<-litlit2 %>% group_by(transect2, quadrat,  year, trt) %>% summarize(lit=mean(litter))
+litlit3$quadUnique <- paste(litlit3$transect, litlit3$quadrat, sep = "_")
 
 
 
@@ -49,13 +52,43 @@ r.squaredGLMM(rich_IG2_random)
 rich_IG3_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="grass non-native"&year>2008&year<2013))
 AIC(rich_IG3_random)
 r.squaredGLMM(rich_IG3_random)
+
 #native richness 2005-2008
+rich_NF2_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2004&year<2009))
+AIC(rich_NF2_random)
+r.squaredGLMM(rich_NF2_random)
+
 #native richness 2009-2012
+rich_NF3_random<-lme(richness~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(richrich2, func=="forb native"&year>2008&year<2013))
+AIC(rich_NF3_random)
+r.squaredGLMM(rich_NF3_random)
 
 #nonnative cover 2005-2008
+cov_NF2_random<-lme(relcov~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2004&year<2009))
+AIC(cov_NF2_random)
+r.squaredGLMM(cov_NF2_random)
+
 #nonnative cover 2009-2012
+cov_NF3_random<-lme(relcov~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(covcov2, func=="forb native"&year>2008&year<2013))
+AIC(cov_NF3_random)
+r.squaredGLMM(cov_NF3_random)
+
 #native cover 2005-2008
+cov_IG2_random<-lme(relcov~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2004&year<2009))
+AIC(cov_IG2_random)
+r.squaredGLMM(cov_IG2_random)
+
 #native cover 2009-2012
+cov_IG3_random<-lme(relcov~trt*year, random=~1|quadUnique, na.action=na.omit, data = subset(covcov2, func=="grass non-native"&year>2008&year<2013))
+AIC(cov_IG3_random)
+r.squaredGLMM(cov_IG3_random)
 
 #litter 2005-2008
+lit2_random<-lme(lit~trt*year, random=(~1|quadUnique), na.action=na.omit, data = subset(litlit3,year>2005&year<2009))
+AIC(lit2_random)
+r.squaredGLMM(lit2_random)
+
 #litter 2009-2012
+lit3_random<-lme(lit~trt*year, random=(~1|quadUnique), na.action=na.omit, data = subset(litlit3,year>2008&year<2013))
+AIC(lit3_random)
+r.squaredGLMM(lit3_random)
