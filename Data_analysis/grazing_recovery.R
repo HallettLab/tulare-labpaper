@@ -479,7 +479,9 @@ pler <- alldat %>%
   group_by(year, trt) %>%
   summarize(meancover = mean(cover), secover = calcSE(cover))
 ggplot(pler, aes(x = year, y = meancover, color = trt)) +
-  geom_line() +
+  geom_line(linetype="dashed", size = 0.7) +
+  geom_line(data=subset(pler, year%in%c(2008:2018)), aes(color=as.factor(trt)), size = 1) +
+  geom_line(data=subset(pler, year%in%c(2001:2008)&trt=="grazed burned"), aes(color=as.factor(trt)), size = 1) +
   geom_point(aes(fill = trt, shape = trt)) +
   geom_errorbar(aes(ymin=meancover-secover, ymax=meancover+secover, color=as.factor(trt)), width =.2) +
   labs(x = "Year", y = "Plantago Absolute Cover (%)") +
